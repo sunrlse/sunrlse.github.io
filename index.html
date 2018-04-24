@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>sunr1se</title>
+    <style>
+        * {
+            margin: 0; 
+            padding: 0;
+        }
+        body {
+            background-color: #24292e;
+            background-image: url(https://desktop.github.com/images/star-bg.svg),linear-gradient(#191c20, #24292e 15%);
+            background-repeat: repeat-x;
+            background-position: center 0, 0 0, 0 0;
+        }
+        h2 {
+            text-align: center;
+            color: white;
+            font-weight: 200;
+            -webkit-font-smoothing: antialiased;
+        }
+        .stars {
+            width: 1000px;
+            height: 500px;
+            margin: 200px auto 0;
+            position: relative;
+            transform: rotateZ(20deg);
+            /* animation: scale 2s infinite alternate; */
+        }
+        .star {
+            position: absolute;
+        }
+        .star:nth-of-type(1) {
+            left: 90px;
+            top: 230px;
+            animation: fade 1.5s infinite alternate;
+        }
+        .star:nth-of-type(2) {
+            left: 260px;
+            top: 170px;
+            animation: fade 2.1s infinite alternate;
+        }
+        .star:nth-of-type(3) {
+            left: 430px;
+            top: 175px;
+            animation: fade 0.001s infinite alternate;
+        }
+        .star:nth-of-type(4) {
+            left: 590px;
+            top: 210px;
+            animation: fade 1.8s infinite alternate;
+        }
+        .star:nth-of-type(5) {
+            left: 645px;
+            top: 340px;
+            animation: fade 2.3s infinite alternate;
+        }
+        .star:nth-of-type(6) {
+            left: 780px;
+            top: 340px;
+            animation: fade 0.1s infinite alternate;
+        }
+        .star:nth-of-type(7) {
+            left: 830px;
+            top: 215px;
+            animation: fade 3.3s infinite alternate;
+        }
+        @keyframes fade {
+            from { opacity: 1; transform: skew(6deg, 6deg)}
+            to { opacity: .3; transform: skew(-6deg, 12deg)}
+        }
+        @keyframes scale {
+            from { transform: scale(1) rotateZ(20deg)}
+            to { transform: scale(1.1) rotateZ(20deg)}
+        }
+    </style>
+</head>
+<body>
+    <h2>敬请期待...</h2>
+    <div class="stars">
+        <canvas class="star"></canvas>
+        <canvas class="star"></canvas>
+        <canvas class="star"></canvas>
+        <canvas class="star"></canvas>
+        <canvas class="star"></canvas>
+        <canvas class="star"></canvas>
+        <canvas class="star"></canvas>
+    </div>
+    <script>
+        var _stars = document.querySelectorAll('.star');
+        _stars.forEach(function(star, index) {
+            drawStar({
+                star: star,
+                R: '10',
+                r: '5',
+                x: 10,
+                y: 10
+            })
+        });
+        console.log(_stars);
+        function drawStar(options) {
+            var canvas = options.star;  
+            var ctx = canvas.getContext("2d");  
+            ctx.beginPath();  
+            for (var i = 0; i < 5; i++) {  
+                ctx.lineTo(Math.cos((18+i*72)/180*Math.PI)*options.R+options.x,  
+                                -Math.sin((18+i*72)/180*Math.PI)*options.R+options.y);  
+                ctx.lineTo(Math.cos((54+i*72)/180*Math.PI)*options.r+options.x,  
+                                -Math.sin((54+i*72)/180*Math.PI)*options.r+options.y);  
+            }  
+            ctx.closePath();  
+            // ctx.lineWidth="1";  
+            ctx.fillStyle = "#fff";  
+            // ctx.strokeStyle = "#f0c94b";  
+            ctx.fill();  
+            ctx.stroke();
+        }
+    </script>
+</body>
+</html>
