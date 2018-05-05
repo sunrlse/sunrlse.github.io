@@ -1,0 +1,12 @@
+@function px2rem($px) {
+  $rem: 37.5;
+  @return ($px / $rem) + rem;
+}
+.btn {
+  width: px2rem(100);
+  height: px2rem(100);
+  &.small {
+    width: px2rem(50);
+    height: px2rem(50);
+  }
+}
