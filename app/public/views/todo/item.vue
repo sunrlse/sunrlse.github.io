@@ -14,11 +14,11 @@ export default {
     todo: {
       type: Object,
       required: true
-    },
+    }
   },
   methods: {
-    delTodo() {
-      this.$emit('delItem', this.todo.id);
+    delTodo () {
+      this.$emit('delItem', this.todo.id)
     }
   }
 }

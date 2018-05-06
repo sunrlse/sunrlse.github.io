@@ -2,6 +2,8 @@
 const path = require('path');
 const webpack = require('webpack');
 const htmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextWebpackPlugin = require('extract-text-webpack-plugin');// 非js文件处理
+
 const isDev = process.env.NODE_ENV === 'development';
 
 const config = {
@@ -20,27 +22,6 @@ const config = {
             {
                 test: /\.jsx$/,
                 loader: 'babel-loader'
-            },
-            {
-                test: /\.css$/,
-                use: [
-                    'style-loader',
-                    'css-loader'
-                ]
-            },
-            {
-                test: /\.styl/,
-                use: [
-                    'style-loader',
-                    'css-loader',
-                    {
-                        loader: 'postcss-loader',
-                        options: {
-                            sourceMap: true
-                        }
-                    },
-                    'stylus-loader'
-                ]
             },
             {
                 test: /\.(jpg|png|gif|jpeg|svg)$/,
@@ -68,6 +49,20 @@ const config = {
 }
 
 if (isDev) {
+    config.module.rules.push({
+        test: /\.styl/,
+        use: [
+            'style-loader',
+            'css-loader',
+            {
+                loader: 'postcss-loader',
+                options: {
+                    sourceMap: true
+                }
+            },
+            'stylus-loader'
+        ]
+    })
     //浏览器调试，映射代码片段，定位错误
     config.devtool = '#cheap-module-eval-source-map';
     //webpack2 才有的devServer
@@ -87,6 +82,39 @@ if (isDev) {
     config.plugins.push(
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
+    )
+} else {
+    config.entry = {
+        app: path.join(__dirname, 'app/public/index.js'),
+        vendor: ['vue']
+    }
+    config.output.filename = '[name].[chunkhash:8].js';
+    config.module.rules.push(
+        {
+            test: /\.styl$/,
+            use: ExtractTextWebpackPlugin.extract({
+                fallback: 'style-loader',
+                use: [
+                    'css-loader',
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            sourceMap: true
+                        },
+                    },
+                    'stylus-loader'
+                ]
+            })
+        }
+    );
+    config.plugins.push(
+        new ExtractTextWebpackPlugin('styles.[contentHash:8].css'),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor'
+        }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'runtime'
+        })
     )
 }
 

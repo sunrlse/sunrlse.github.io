@@ -26,21 +26,21 @@ export default {
       required: true
     }
   },
-  data() {
+  data () {
     return {
       states: ['all', 'active', 'completed']
     }
   },
   computed: {
-    unCompletedTodoNumber() {
-      return this.todos.filter(todo => !todo.completed).length;
+    unCompletedTodoNumber () {
+      return this.todos.filter(todo => !todo.completed).length
     }
   },
   methods: {
-    toggleFilter(state) {
-      this.$emit('filterList', state);
+    toggleFilter (state) {
+      this.$emit('filterList', state)
     },
-    clearAllCompleted() {
+    clearAllCompleted () {
       this.$emit('clearAllCompleted')
     }
   }
@@ -70,5 +70,4 @@ export default {
       text-decoration underline
     }
   }
-
 </style>
