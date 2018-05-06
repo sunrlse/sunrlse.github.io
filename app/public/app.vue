@@ -7,28 +7,25 @@
 </template>
 
 <script>
-    import Header from './todo/header.vue';
-    import Footer from './todo/footer.jsx';
-    import Todo from './todo/todo.vue';
-    export default {
-        data() {
-           return {
-               text: 'now vue!'
-           }
-        },
-        components: {
-            Header,
-            Footer,
-            Todo
-        }
-        // render() {
-        //     createElement()
-        // }
+import Header from './layout/header.vue'
+import Footer from './layout/footer.jsx'
+import Todo from './views/todo/todo.vue'
+export default {
+  data () {
+    return {
+      text: 'now vue!'
     }
+  },
+  components: {
+    Header,
+    Footer,
+    Todo
+  }
+}
 </script>
 
 <style lang="stylus" scoped>
-    #app {
-        height 100%
-    }
+  #app {
+    height 100%
+  }
 </style>
