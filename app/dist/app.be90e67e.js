@@ -235,29 +235,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 var id = 0;
 exports.default = {
@@ -265,17 +242,62 @@ exports.default = {
     return {
       todos: [],
       filter: 'all',
-      show0: false,
-      show1: false,
-      show2: false,
-      show3: false,
-      show4: false,
-      show5: false,
-      show6: false,
-      show7: false,
-      show8: false,
-      show9: false,
-      show10: false
+      list: [{
+        id: 11,
+        q: '原生js实现数组拷贝的方法有哪些？',
+        show: false,
+        fold: true
+      }, {
+        id: 12,
+        q: '原生js数组删除元素的方法有哪些？',
+        show: false,
+        fold: true
+      }, {
+        id: 13,
+        q: '谈谈栈溢出的情况？',
+        show: false,
+        fold: true
+      }, {
+        id: 14,
+        q: '说一下函数的作用域？ 垃圾回收机制 ？',
+        show: false,
+        fold: true
+      }, {
+        id: 15,
+        q: '原型链是什么 ？ 怎样实现继承 ？这里面有个坑，你说下？',
+        show: false,
+        fold: true
+      }, {
+        id: 16,
+        q: 'es6 都使用了哪些新的语法或者特性？',
+        show: false,
+        fold: true
+      }, {
+        id: 17,
+        q: 'vue-router 哪几种跳转方式？',
+        show: false,
+        fold: true
+      }, {
+        id: 18,
+        q: 'vue双向绑定的实现原理？',
+        show: false,
+        fold: true
+      }, {
+        id: 19,
+        q: '刷新页面，vuex存储的状态还存在吗，vuex是只能用在单页面应用中吗？',
+        show: false,
+        fold: true
+      }, {
+        id: 20,
+        q: '说一下对vue的生命周期理解',
+        show: false,
+        fold: true
+      }, {
+        id: 21,
+        q: '使用webpack让你自己完整搭建 ok吗？',
+        show: false,
+        fold: true
+      }]
     };
   },
 
@@ -294,45 +316,22 @@ exports.default = {
       });
     }
   },
-  mounted: function mounted() {
-    var _this = this;
-
-    setTimeout(function () {
-      _this.show0 = true;
-    }, 0);
-    setTimeout(function () {
-      _this.show1 = true;
-    }, 100);
-    setTimeout(function () {
-      _this.show2 = true;
-    }, 200);
-    setTimeout(function () {
-      _this.show3 = true;
-    }, 300);
-    setTimeout(function () {
-      _this.show4 = true;
-    }, 400);
-    setTimeout(function () {
-      _this.show5 = true;
-    }, 500);
-    setTimeout(function () {
-      _this.show6 = true;
-    }, 600);
-    setTimeout(function () {
-      _this.show7 = true;
-    }, 700);
-    setTimeout(function () {
-      _this.show8 = true;
-    }, 800);
-    setTimeout(function () {
-      _this.show9 = true;
-    }, 900);
-    setTimeout(function () {
-      _this.show10 = true;
-    }, 1000);
+  beforeMount: function beforeMount() {
+    this.list.forEach(function (item, index) {
+      var timer = setTimeout(function () {
+        item.show = true;clearTimeout(timer);
+      }, index * 100);
+    });
   },
 
   methods: {
+    open: function open(id) {
+      this.list.filter(function (item) {
+        if (item.id === id) {
+          item.fold = !item.fold;
+        }
+      });
+    },
     addTodo: function addTodo(e) {
       var val = e.target.value.trim();
       if (!val) return;
@@ -637,7 +636,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_todo_vue__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_todo_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_todo_vue__);
 /* harmony namespace reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_todo_vue__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_todo_vue__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7709fad2_hasScoped_true_preserveWhitespace_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_todo_vue__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_33e8b0db_hasScoped_true_preserveWhitespace_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_todo_vue__ = __webpack_require__(27);
 function injectStyle (ssrContext) {
   __webpack_require__(20)
 }
@@ -652,12 +651,12 @@ var __vue_template_functional__ = false
 /* styles */
 var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = "data-v-7709fad2"
+var __vue_scopeId__ = "data-v-33e8b0db"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_todo_vue___default.a,
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7709fad2_hasScoped_true_preserveWhitespace_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_todo_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_33e8b0db_hasScoped_true_preserveWhitespace_true_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_todo_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -788,7 +787,7 @@ var esExports = { render: render, staticRenderFns: staticRenderFns }
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"content"}},[_c('section',{staticClass:"q-wrap"},[_c('ul',[_c('transition',{attrs:{"name":"slide-fade"}},[(_vm.show0)?_c('li',[_vm._v("原生js实现数组拷贝的方法有哪些？")]):_vm._e()]),_vm._v(" "),_c('transition',{attrs:{"name":"slide-fade"}},[(_vm.show1)?_c('li',[_vm._v("原生js数组删除元素的方法有哪些？")]):_vm._e()]),_vm._v(" "),_c('transition',{attrs:{"name":"slide-fade"}},[(_vm.show2)?_c('li',[_vm._v("说一下函数的作用域？ 垃圾回收机制 ？")]):_vm._e()]),_vm._v(" "),_c('transition',{attrs:{"name":"slide-fade"}},[(_vm.show3)?_c('li',[_vm._v("原型链是什么 ？ 怎样实现继承 ？这里面有个坑，你说下？")]):_vm._e()]),_vm._v(" "),_c('transition',{attrs:{"name":"slide-fade"}},[(_vm.show4)?_c('li',[_vm._v("es6 都使用了哪些新的语法或者特性？")]):_vm._e()]),_vm._v(" "),_c('transition',{attrs:{"name":"slide-fade"}},[(_vm.show5)?_c('li',[_vm._v("vue-router 哪几种跳转方式？")]):_vm._e()]),_vm._v(" "),_c('transition',{attrs:{"name":"slide-fade"}},[(_vm.show6)?_c('li',[_vm._v("vue双向绑定的实现原理？")]):_vm._e()]),_vm._v(" "),_c('transition',{attrs:{"name":"slide-fade"}},[(_vm.show7)?_c('li',[_vm._v("刷新页面，vuex存储的状态还存在吗，vuex是只能用在单页面应用中吗")]):_vm._e()]),_vm._v(" "),_c('transition',{attrs:{"name":"slide-fade"}},[(_vm.show8)?_c('li',[_vm._v("说一下对vue的生命周期理解")]):_vm._e()]),_vm._v(" "),_c('transition',{attrs:{"name":"slide-fade"}},[(_vm.show9)?_c('li',[_vm._v("你们为什么非要用nodejs？")]):_vm._e()]),_vm._v(" "),_c('transition',{attrs:{"name":"slide-fade"}},[(_vm.show10)?_c('li',[_vm._v("使用webpack让你自己完整搭建 ok吗？")]):_vm._e()])],1)]),_vm._v(" "),_c('section',{staticClass:"todo-wrap"},[_c('input',{staticClass:"add-input",attrs:{"type":"text","autofocus":"autofocus","placeholder":"to do sth."},on:{"keyup":function($event){if(!('button' in $event)&&_vm._k($event.keyCode,"enter",13,$event.key,"Enter")){ return null; }return _vm.addTodo($event)}}}),_vm._v(" "),_vm._l((_vm.shownTodos),function(todo){return _c('Item',{key:todo.id,attrs:{"todo":todo},on:{"delItem":_vm.delTodo}})}),_vm._v(" "),_c('Tabs',{attrs:{"todos":_vm.todos,"filter":_vm.filter},on:{"filterList":_vm.filterList,"clearAllCompleted":_vm.clearAllCompleted}})],2)])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{attrs:{"id":"content"}},[_c('section',{staticClass:"q-wrap"},[_c('transition-group',{attrs:{"name":"slide-fade","tag":"ul"}},_vm._l((_vm.list),function(item){return (item.show)?_c('li',{key:item.id,class:item.fold ? '' : 'unfold',on:{"click":function($event){_vm.open(item.id)}}},[_vm._v("\n          "+_vm._s(item.q)+"\n          "),_c('span'),_vm._v(" "),(item.show)?_c('p',[_vm._v("答：_____")]):_vm._e()]):_vm._e()}))],1),_vm._v(" "),_c('section',{staticClass:"todo-wrap"},[_c('input',{staticClass:"add-input",attrs:{"type":"text","autofocus":"autofocus","placeholder":"to do sth."},on:{"keyup":function($event){if(!('button' in $event)&&_vm._k($event.keyCode,"enter",13,$event.key,"Enter")){ return null; }return _vm.addTodo($event)}}}),_vm._v(" "),_vm._l((_vm.shownTodos),function(todo){return _c('Item',{key:todo.id,attrs:{"todo":todo},on:{"delItem":_vm.delTodo}})}),_vm._v(" "),_c('Tabs',{attrs:{"todos":_vm.todos,"filter":_vm.filter},on:{"filterList":_vm.filterList,"clearAllCompleted":_vm.clearAllCompleted}})],2)])}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);
