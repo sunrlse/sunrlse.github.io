@@ -1,41 +1,18 @@
 <template>
   <div id="content">
       <section class="q-wrap">
-        <ul>
-          <transition name="slide-fade">
-            <li v-if="show0">原生js实现数组拷贝的方法有哪些？</li>
-            </transition>
-          <transition name="slide-fade">
-            <li v-if="show1">原生js数组删除元素的方法有哪些？</li>
-            </transition>
-          <transition name="slide-fade">
-            <li v-if="show2">说一下函数的作用域？ 垃圾回收机制 ？</li>
-            </transition>
-          <transition name="slide-fade">
-            <li v-if="show3">原型链是什么 ？ 怎样实现继承 ？这里面有个坑，你说下？</li>
-            </transition>
-          <transition name="slide-fade">
-            <li v-if="show4">es6 都使用了哪些新的语法或者特性？</li>
-            </transition>
-          <transition name="slide-fade">
-            <li v-if="show5">vue-router 哪几种跳转方式？</li>
-            </transition>
-          <transition name="slide-fade">
-            <li v-if="show6">vue双向绑定的实现原理？</li>
-            </transition>
-          <transition name="slide-fade">
-            <li v-if="show7">刷新页面，vuex存储的状态还存在吗，vuex是只能用在单页面应用中吗</li>
-            </transition>
-          <transition name="slide-fade">
-            <li v-if="show8">说一下对vue的生命周期理解</li>
-            </transition>
-          <transition name="slide-fade">
-            <li v-if="show9">你们为什么非要用nodejs？</li>
-            </transition>
-          <transition name="slide-fade">
-            <li v-if="show10">使用webpack让你自己完整搭建 ok吗？</li>
-          </transition>
-        </ul>
+        <transition-group name="slide-fade" tag="ul">
+          <li
+            v-for="item in list"
+            :key="item.id"
+            v-if="item.show"
+            :class="item.fold ? '' : 'unfold'"
+            @click="open(item.id)">
+            {{item.q}}
+            <span></span>
+            <p v-if="item.show">答：_____</p>
+          </li>
+        </transition-group>
       </section>
     <section class="todo-wrap">
       <input
@@ -69,17 +46,74 @@ export default {
     return {
       todos: [],
       filter: 'all',
-      show0: false,
-      show1: false,
-      show2: false,
-      show3: false,
-      show4: false,
-      show5: false,
-      show6: false,
-      show7: false,
-      show8: false,
-      show9: false,
-      show10: false
+      list: [
+        {
+          id: 11,
+          q: '原生js实现数组拷贝的方法有哪些？',
+          show: false,
+          fold: true
+        },
+        {
+          id: 12,
+          q: '原生js数组删除元素的方法有哪些？',
+          show: false,
+          fold: true
+        },
+        {
+          id: 13,
+          q: '谈谈栈溢出的情况？',
+          show: false,
+          fold: true
+        },
+        {
+          id: 14,
+          q: '说一下函数的作用域？ 垃圾回收机制 ？',
+          show: false,
+          fold: true
+        },
+        {
+          id: 15,
+          q: '原型链是什么 ？ 怎样实现继承 ？这里面有个坑，你说下？',
+          show: false,
+          fold: true
+        },
+        {
+          id: 16,
+          q: 'es6 都使用了哪些新的语法或者特性？',
+          show: false,
+          fold: true
+        },
+        {
+          id: 17,
+          q: 'vue-router 哪几种跳转方式？',
+          show: false,
+          fold: true
+        },
+        {
+          id: 18,
+          q: 'vue双向绑定的实现原理？',
+          show: false,
+          fold: true
+        },
+        {
+          id: 19,
+          q: '刷新页面，vuex存储的状态还存在吗，vuex是只能用在单页面应用中吗？',
+          show: false,
+          fold: true
+        },
+        {
+          id: 20,
+          q: '说一下对vue的生命周期理解',
+          show: false,
+          fold: true
+        },
+        {
+          id: 21,
+          q: '使用webpack让你自己完整搭建 ok吗？',
+          show: false,
+          fold: true
+        }
+      ]
     }
   },
   components: {
@@ -95,20 +129,19 @@ export default {
       return this.todos.filter(todo => todo.completed === completed)
     }
   },
-  mounted () {
-    setTimeout(() => { this.show0 = true }, 0)
-    setTimeout(() => { this.show1 = true }, 100)
-    setTimeout(() => { this.show2 = true }, 200)
-    setTimeout(() => { this.show3 = true }, 300)
-    setTimeout(() => { this.show4 = true }, 400)
-    setTimeout(() => { this.show5 = true }, 500)
-    setTimeout(() => { this.show6 = true }, 600)
-    setTimeout(() => { this.show7 = true }, 700)
-    setTimeout(() => { this.show8 = true }, 800)
-    setTimeout(() => { this.show9 = true }, 900)
-    setTimeout(() => { this.show10 = true }, 1000)
+  beforeMount () {
+    this.list.forEach((item, index) => {
+      let timer = setTimeout(() => { item.show = true; clearTimeout(timer) }, index * 100)
+    })
   },
   methods: {
+    open (id) {
+      this.list.filter(item => {
+        if (item.id === id) {
+          item.fold = !item.fold
+        }
+      })
+    },
     addTodo (e) {
       let val = e.target.value.trim()
       if (!val) return
@@ -142,6 +175,33 @@ export default {
     font-size 20px
     font-weight 300
     -webkit-font-smoothing antialiased
+    li {
+      position relative
+      height 28px
+      overflow hidden
+      padding-left 20px
+      span {
+        position absolute
+        content ""
+        left 6px
+        top 8px
+        cursor pointer
+        border 5px solid transparent
+        border-left 6px solid white
+      }
+      p {
+        margin 0
+        font-size 16px
+      }
+      &.unfold {
+        height auto
+        span {
+          left 3px
+          border 5px solid transparent
+          border-top 6px solid white
+        }
+      }
+    }
   }
   .todo-wrap {
     width 600px
