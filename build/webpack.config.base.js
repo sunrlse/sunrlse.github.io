@@ -3,6 +3,7 @@ const isDev = process.env.NODE_ENV === 'development';
 const createVueLoaderOptions = require('./vue-loader.config');
 
 const config = {
+  mode: process.env.NODE_ENV || 'production',
   target: 'web',
   entry: path.join(__dirname, '../app/public/index.js'),
   output: {

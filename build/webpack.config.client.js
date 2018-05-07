@@ -23,7 +23,7 @@ const devServer = {
     errors: true
   },
   hot: true,
-  open : true,
+  open : false,
   // spa 前端路由， 没有做映射的地址，映射到入口index.html上
   // historyFallback: {
 
@@ -56,15 +56,15 @@ if (isDev) {
     //webpack2 才有的devServer
     devServer,
     plugins: defaultPlugins.concat([
-      new webpack.HotModuleReplacementPlugin(),
-      new webpack.NoEmitOnErrorsPlugin()
+      new webpack.HotModuleReplacementPlugin()
+      // new webpack.NoEmitOnErrorsPlugin()
     ])
   })
 } else {
   config = merge(baseConfig, {
     entry: {
-      app: path.join(__dirname, '../app/public/index.js'),
-      vendor: ['vue']
+      app: path.join(__dirname, '../app/public/index.js')
+      // vendor: ['vue']
     },
     output: {
       filename: '[name].[chunkhash:8].js'
@@ -89,15 +89,21 @@ if (isDev) {
         }
       ]
     },
+    optimization: {
+      splitChunks: {
+        chunks: 'all'
+      },
+      runtimeChunk: true
+    },
     plugins: defaultPlugins.concat([
       // extract css文件单独打包到css文件，但是.vue文件中的style并未出来
       new ExtractTextWebpackPlugin('styles.[contentHash:8].css'),
-      new webpack.optimize.CommonsChunkPlugin({
-        name: 'vendor'
-      }),
-      new webpack.optimize.CommonsChunkPlugin({
-        name: 'runtime'
-      })
+      // new webpack.optimize.CommonsChunkPlugin({
+      //   name: 'vendor'
+      // }),
+      // new webpack.optimize.CommonsChunkPlugin({
+      //   name: 'runtime'
+      // })
     ])
   })
 }
