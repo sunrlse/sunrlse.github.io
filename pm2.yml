@@ -1,0 +1,9 @@
+# 文本类型的标记语言    pm2 默认使用yml 编写配置文件
+
+apps:
+  - script: ./server/server.js
+    name: vue-todo
+    env_production:
+      NODE_ENV: production
+      HOST: localhost
+      PORT: 5566

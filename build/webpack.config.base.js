@@ -1,14 +1,15 @@
-const path = require('path');
-const isDev = process.env.NODE_ENV === 'development';
-const createVueLoaderOptions = require('./vue-loader.config');
+const path = require('path')
+const isDev = process.env.NODE_ENV === 'development'
+const createVueLoaderOptions = require('./vue-loader.config')
 
 const config = {
   mode: process.env.NODE_ENV || 'production',
   target: 'web',
-  entry: path.join(__dirname, '../app/public/index.js'),
+  entry: path.join(__dirname, '../client/client-entry.js'),
   output: {
     filename: 'bundle.[hash:8].js',
-    path: path.join(__dirname, '../app/dist')
+    path: path.join(__dirname, '../public'),
+    publicPath: 'http://127.0.0.1:8000/public/'
   },
   module: {
     rules: [
@@ -16,7 +17,7 @@ const config = {
         test: /\.(vue|js|jsx)$/,
         loader: 'eslint-loader',
         exclude: /node_modules/,
-        enforce: 'pre'  // 先处理eslint 再 之后的 vue-loader处理
+        enforce: 'pre' // 先处理eslint 再 之后的 vue-loader处理
       },
       {
         test: /\.vue$/,
@@ -46,6 +47,6 @@ const config = {
       }
     ]
   }
-};
+}
 
-module.exports = config;
+module.exports = config
