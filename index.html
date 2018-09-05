@@ -280,6 +280,165 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://sunrlse.github.io/2018/09/05/throttle/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="sunr1se">
+      <meta itemprop="description" content="说不上爱别说谎就一点喜欢">
+      <meta itemprop="image" content="/images/dancer.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="狗林">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/05/throttle/" itemprop="url">
+                  节流
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-09-05 16:55:58 / 修改时间：16:59:34" itemprop="dateCreated datePublished" datetime="2018-09-05T16:55:58+08:00">2018-09-05</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="节流函数"><a href="#节流函数" class="headerlink" title="节流函数"></a>节流函数</h3><pre>
+    function throttle(fn, param, context, delay, mustApplyTime) {
+        clearTimeout(fn.timer);
+        var param = param || {},
+            context = context || null,
+            delay = delay || 500,
+            mustApplyTime = mustApplyTime || 1000;
+        fn._cur = Date.now();
+        if (!fn._start) {
+            fn._start = fn._cur;
+        }
+        if (fn._cur - fn._start > mustApplyTime) { 
+            fn.call(context, param);
+            fn._start = fn._cur;
+        } else {
+            fn.timer = setTimeout(function() {
+            fn.call(context, param);
+            }, delay);
+        }
+    }
+</pre>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://sunrlse.github.io/2018/08/29/react-router解读（三）/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1389,7 +1548,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-count">6</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
