@@ -106,18 +106,18 @@
 
 
 
-  <meta name="description" content="节流函数     function throttle(fn, param, context, delay, mustApplyTime) {         clearTimeout(fn.timer);         var param = param || {},             context = context || null,             delay = delay">
+  <meta name="description" content="节流函数12345678910111213141516171819   function throttle(fn, param, context, delay, mustApplyTime) &amp;#123;	clearTimeout(fn.timer);       var param = param || &amp;#123;&amp;#125;,           context = context || n">
 <meta name="keywords" content="js">
 <meta property="og:type" content="article">
 <meta property="og:title" content="节流">
 <meta property="og:url" content="https://sunrlse.github.io/2018/09/05/throttle/index.html">
 <meta property="og:site_name" content="狗林">
-<meta property="og:description" content="节流函数     function throttle(fn, param, context, delay, mustApplyTime) {         clearTimeout(fn.timer);         var param = param || {},             context = context || null,             delay = delay">
+<meta property="og:description" content="节流函数12345678910111213141516171819   function throttle(fn, param, context, delay, mustApplyTime) &amp;#123;	clearTimeout(fn.timer);       var param = param || &amp;#123;&amp;#125;,           context = context || n">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-09-05T09:01:32.341Z">
+<meta property="og:updated_time" content="2018-09-05T10:31:46.683Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="节流">
-<meta name="twitter:description" content="节流函数     function throttle(fn, param, context, delay, mustApplyTime) {         clearTimeout(fn.timer);         var param = param || {},             context = context || null,             delay = delay">
+<meta name="twitter:description" content="节流函数12345678910111213141516171819   function throttle(fn, param, context, delay, mustApplyTime) &amp;#123;	clearTimeout(fn.timer);       var param = param || &amp;#123;&amp;#125;,           context = context || n">
 
 
 
@@ -323,7 +323,7 @@
                 
               
 
-              <time title="创建时间：2018-09-05 16:55:58 / 修改时间：17:01:32" itemprop="dateCreated datePublished" datetime="2018-09-05T16:55:58+08:00">2018-09-05</time>
+              <time title="创建时间：2018-09-05 16:55:58 / 修改时间：18:31:46" itemprop="dateCreated datePublished" datetime="2018-09-05T16:55:58+08:00">2018-09-05</time>
             
 
             
@@ -361,27 +361,7 @@
       
 
       
-        <h3 id="节流函数"><a href="#节流函数" class="headerlink" title="节流函数"></a>节流函数</h3><pre>
-    function throttle(fn, param, context, delay, mustApplyTime) {
-        clearTimeout(fn.timer);
-        var param = param || {},
-            context = context || null,
-            delay = delay || 500,
-            mustApplyTime = mustApplyTime || 1000;
-        fn._cur = Date.now();
-        if (!fn._start) {
-            fn._start = fn._cur;
-        }
-        if (fn._cur - fn._start > mustApplyTime) { 
-            fn.call(context, param);
-            fn._start = fn._cur;
-        } else {
-            fn.timer = setTimeout(function() {
-            fn.call(context, param);
-            }, delay);
-        }
-    }
-</pre>
+        <h3 id="节流函数"><a href="#节流函数" class="headerlink" title="节流函数"></a>节流函数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">   function throttle(fn, param, context, delay, mustApplyTime) &#123;</span><br><span class="line">	clearTimeout(fn.timer);</span><br><span class="line">       var param = param || &#123;&#125;,</span><br><span class="line">           context = context || null,</span><br><span class="line">           delay = delay || 500,</span><br><span class="line">           mustApplyTime = mustApplyTime || 1000;</span><br><span class="line">	fn._cur = Date.now();</span><br><span class="line">	if (!fn._start) &#123;</span><br><span class="line">		fn._start = fn._cur;</span><br><span class="line">	&#125;</span><br><span class="line">	if (fn._cur - fn._start &gt; mustApplyTime) &#123; </span><br><span class="line">		fn.call(context, param);</span><br><span class="line">		fn._start = fn._cur;</span><br><span class="line">	&#125; else &#123;</span><br><span class="line">		fn.timer = setTimeout(function() &#123;</span><br><span class="line">		fn.call(context, param);</span><br><span class="line">		&#125;, delay);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
       
     </div>
 
