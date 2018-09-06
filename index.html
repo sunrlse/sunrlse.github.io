@@ -326,7 +326,7 @@
                 
               
 
-              <time title="创建时间：2018-09-05 17:14:19 / 修改时间：18:21:29" itemprop="dateCreated datePublished" datetime="2018-09-05T17:14:19+08:00">2018-09-05</time>
+              <time title="创建时间：2018-09-05 17:14:19 / 修改时间：18:49:49" itemprop="dateCreated datePublished" datetime="2018-09-05T17:14:19+08:00">2018-09-05</time>
             
 
             
@@ -365,8 +365,7 @@
 
       
         
-          
-            <h3 id="jQuery-整体架构"><a href="#jQuery-整体架构" class="headerlink" title="jQuery 整体架构"></a>jQuery 整体架构</h3><p><img src="/images/jquery_structure.png" alt="structure"></p>
+          <h3 id="jQuery-整体架构"><a href="#jQuery-整体架构" class="headerlink" title="jQuery 整体架构"></a>jQuery 整体架构</h3><p><img src="/images/jquery_structure.png" alt="structure"></p>
 <h3 id="jQuery-闭包结构"><a href="#jQuery-闭包结构" class="headerlink" title="jQuery 闭包结构"></a>jQuery 闭包结构</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(function(window, undefined)&#123;</span><br><span class="line">    // jQuery code</span><br><span class="line">&#125;)(window)</span><br></pre></td></tr></table></figure>
 <p>jQuery 具体的实现，都被包含在了一个立即执行函数构造的闭包里面，为了不污染全局作用域，最终只暴露 $ 和 jQuery 两个变量给外界，尽量避开变量冲突。</p>
 <h3 id="jQuery-无-new-构造"><a href="#jQuery-无-new-构造" class="headerlink" title="jQuery 无 new 构造"></a>jQuery 无 new 构造</h3><p>通常，实例化一个jQuery对象的方法:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// 无 new 构造</span><br><span class="line">$(&apos;div&apos;).text(&apos;hello&apos;);</span><br><span class="line">// 使用 new </span><br><span class="line">var div = new $(&apos;div&apos;);</span><br><span class="line">div.text(&apos;hello&apos;);</span><br></pre></td></tr></table></figure></p>
@@ -399,8 +398,13 @@
 <h3 id="jQuery-变量冲突处理"><a href="#jQuery-变量冲突处理" class="headerlink" title="jQuery 变量冲突处理"></a>jQuery 变量冲突处理</h3><p>最后想提一提 jQuery 变量的冲突处理，通过一开始保存全局变量的 window.jQuery 以及 windw.$ 。<br>当需要处理冲突的时候，调用静态方法 noConflict()，让出变量的控制权，源码如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">(function(window, undefined) &#123;</span><br><span class="line">    var</span><br><span class="line">        // Map over jQuery in case of overwrite</span><br><span class="line">        // 设置别名，通过两个私有变量映射了 window 环境下的 jQuery 和 $ 两个对象，以防止变量被强行覆盖</span><br><span class="line">        _jQuery = window.jQuery,</span><br><span class="line">        _$ = window.$;</span><br><span class="line"> </span><br><span class="line">    jQuery.extend(&#123;</span><br><span class="line">        // noConflict() 方法让出变量 $ 的 jQuery 控制权，这样其他脚本就可以使用它了</span><br><span class="line">        // 通过全名替代简写的方式来使用 jQuery</span><br><span class="line">        // deep -- 布尔值，指示是否允许彻底将 jQuery 变量还原(移交 $ 引用的同时是否移交 jQuery 对象本身)</span><br><span class="line">        noConflict: function(deep) &#123;</span><br><span class="line">            // 判断全局 $ 变量是否等于 jQuery 变量</span><br><span class="line">            // 如果等于，则重新还原全局变量 $ 为 jQuery 运行之前的变量（存储在内部变量 _$ 中）</span><br><span class="line">            if (window.$ === jQuery) &#123;</span><br><span class="line">                // 此时 jQuery 别名 $ 失效</span><br><span class="line">                window.$ = _$;</span><br><span class="line">            &#125;</span><br><span class="line">            // 当开启深度冲突处理并且全局变量 jQuery 等于内部 jQuery，则把全局 jQuery 还原成之前的状况</span><br><span class="line">            if (deep &amp;&amp; window.jQuery === jQuery) &#123;</span><br><span class="line">                // 如果 deep 为 true，此时 jQuery 失效</span><br><span class="line">                window.jQuery = _jQuery;</span><br><span class="line">            &#125;</span><br><span class="line"> </span><br><span class="line">            // 这里返回的是 jQuery 库内部的 jQuery 构造函数（new jQuery.fn.init()）</span><br><span class="line">            // 像使用 $ 一样尽情使用它吧</span><br><span class="line">            return jQuery;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;(window)</span><br></pre></td></tr></table></figure></p>
 <p>画了一幅简单的流程图帮助理解:<br><img src="/images/noconflict.jpg" alt="变量冲突"><br>那么让出了这两个符号之后，是否就不能在我们的代码中使用 jQuery 或者呢 $ 呢？莫慌，还是可以使用的:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 让出 jQuery 、$ 的控制权不代表不能使用 jQuery 和 $ ，方法如下：</span><br><span class="line">var query = jQuery.noConflict(true);</span><br><span class="line"> </span><br><span class="line">(function($) &#123;</span><br><span class="line"> </span><br><span class="line">// 插件或其他形式的代码，也可以将参数设为 jQuery</span><br><span class="line">&#125;)(query);</span><br><span class="line"> </span><br><span class="line">//  ... 其他用 $ 作为别名的库的代码</span><br></pre></td></tr></table></figure></p>
 <p>原文出自<a href="https://www.cnblogs.com/coco1s/p/5261646.html" target="_blank" rel="noopener">ChokCoco</a></p>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2018/09/05/Read-jQuery-source-code/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -498,7 +502,7 @@
                 
               
 
-              <time title="创建时间：2018-09-05 16:55:58 / 修改时间：18:31:46" itemprop="dateCreated datePublished" datetime="2018-09-05T16:55:58+08:00">2018-09-05</time>
+              <time title="创建时间：2018-09-05 16:55:58 / 修改时间：18:48:11" itemprop="dateCreated datePublished" datetime="2018-09-05T16:55:58+08:00">2018-09-05</time>
             
 
             
@@ -654,7 +658,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-09-05 17:01:16" itemprop="dateModified" datetime="2018-09-05T17:01:16+08:00">2018-09-05</time>
+                <time title="修改时间：2018-09-05 18:33:29" itemprop="dateModified" datetime="2018-09-05T18:33:29+08:00">2018-09-05</time>
               
             
           </span>
@@ -689,269 +693,7 @@
       
         
           
-            <h3 id="history-methods-createBrowserHistory"><a href="#history-methods-createBrowserHistory" class="headerlink" title="history methods createBrowserHistory"></a>history methods createBrowserHistory</h3><p>通过之前我们已经知道了react-router-dom的<browserrouter> history模式使用的是history库中的createBrowserHistory方法。下面我们来一起看看其中的奥秘。</browserrouter></p>
-<pre>
-  var createBrowserHistory = function createBrowserHistory() {
-    //  arguments[0], 由上一节可知它是一个非必传的object
-    var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-    (0, _invariant2.default)(_DOMUtils.canUseDOM, 'Browser history needs a DOM');
-    //  之前将history赋值给变量globalHistory
-    var globalHistory = window.history;
-    //  _DOMUtils.js 中处理一些浏览器兼容性 和 浏览器内核、机型判断的方法
-    //  判断是否非主流机型以及浏览器
-    var canUseHistory = (0, _DOMUtils.supportsHistory)();
-    //  是否为IE浏览器
-    var needsHashChangeListener = !(0, _DOMUtils.supportsPopStateOnHashChange)();
-    //  forceRefresh为true，代表将在页面导航时使用完整页面刷新。其他参数请自行参考官网文档
-    var _props$forceRefresh = props.forceRefresh,
-        forceRefresh = _props$forceRefresh === undefined ? false : _props$forceRefresh,
-        _props$getUserConfirm = props.getUserConfirmation,
-        getUserConfirmation = _props$getUserConfirm === undefined ? _DOMUtils.getConfirmation : _props$getUserConfirm,
-        _props$keyLength = props.keyLength,
-        keyLength = _props$keyLength === undefined ? 6 : _props$keyLength;
-
-    var basename = props.basename ? (0, _PathUtils.stripTrailingSlash)((0, _PathUtils.addLeadingSlash)(props.basename)) : '';
-
-    var getDOMLocation = function getDOMLocation(historyState) {
-      var _ref = historyState || {},
-          key = _ref.key,
-          state = _ref.state;
-
-      var _window$location = window.location,
-          pathname = _window$location.pathname,
-          search = _window$location.search,
-          hash = _window$location.hash;
-
-      var path = pathname + search + hash;
-
-      (0, _warning2.default)(!basename || (0, _PathUtils.hasBasename)(path, basename), 'You are attempting to use a basename on a page whose URL path does not begin ' + 'with the basename. Expected path "' + path + '" to begin with "' + basename + '".');
-
-      if (basename) path = (0, _PathUtils.stripBasename)(path, basename);
-
-      return (0, _LocationUtils.createLocation)(path, state, key);
-    };
-
-    var createKey = function createKey() {
-      return Math.random().toString(36).substr(2, keyLength);
-    };
-
-    var transitionManager = (0, _createTransitionManager2.default)();
-
-    var setState = function setState(nextState) {
-      _extends(history, nextState);
-
-      history.length = globalHistory.length;
-
-      transitionManager.notifyListeners(history.location, history.action);
-    };
-
-    var handlePopState = function handlePopState(event) {
-      if ((0, _DOMUtils.isExtraneousPopstateEvent)(event)) return;
-
-      handlePop(getDOMLocation(event.state));
-    };
-
-    var handleHashChange = function handleHashChange() {
-      handlePop(getDOMLocation(getHistoryState()));
-    };
-
-    var forceNextPop = false;
-
-    var handlePop = function handlePop(location) {
-      if (forceNextPop) {
-        forceNextPop = false;
-        setState();
-      } else {
-        var action = 'POP';
-
-        transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) {
-          if (ok) {
-            setState({ action: action, location: location });
-          } else {
-            revertPop(location);
-          }
-        });
-      }
-    };
-
-    var revertPop = function revertPop(fromLocation) {
-      var toLocation = history.location;
-
-      // TODO: We could probably make this more reliable by
-      // keeping a list of keys we've seen in sessionStorage.
-      // Instead, we just default to 0 for keys we don't know.
-
-      var toIndex = allKeys.indexOf(toLocation.key);
-
-      if (toIndex === -1) toIndex = 0;
-
-      var fromIndex = allKeys.indexOf(fromLocation.key);
-
-      if (fromIndex === -1) fromIndex = 0;
-
-      var delta = toIndex - fromIndex;
-
-      if (delta) {
-        forceNextPop = true;
-        go(delta);
-      }
-    };
-
-    var initialLocation = getDOMLocation(getHistoryState());
-    var allKeys = [initialLocation.key];
-
-    var createHref = function createHref(location) {
-      return basename + (0, _PathUtils.createPath)(location);
-    };
-
-    var push = function push(path, state) {
-      (0, _warning2.default)(!((typeof path === 'undefined' ? 'undefined' : _typeof(path)) === 'object' && path.state !== undefined && state !== undefined), 'You should avoid providing a 2nd state argument to push when the 1st ' + 'argument is a location-like object that already has state; it is ignored');
-
-      var action = 'PUSH';
-      //  重写location对象
-      var location = (0, _LocationUtils.createLocation)(path, state, createKey(), history.location);
-
-      transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) {
-        if (!ok) return;
-
-        var href = createHref(location);
-        var key = location.key,
-            state = location.state;
-
-        if (canUseHistory) {
-          globalHistory.pushState({ key: key, state: state }, null, href);
-
-          if (forceRefresh) {
-            window.location.href = href;
-          } else {
-            var prevIndex = allKeys.indexOf(history.location.key);
-            var nextKeys = allKeys.slice(0, prevIndex === -1 ? 0 : prevIndex + 1);
-
-            nextKeys.push(location.key);
-            allKeys = nextKeys;
-
-            setState({ action: action, location: location });
-          }
-        } else {
-          (0, _warning2.default)(state === undefined, 'Browser history cannot push state in browsers that do not support HTML5 history');
-
-          window.location.href = href;
-        }
-      });
-    };
-
-    var replace = function replace(path, state) {
-      (0, _warning2.default)(!((typeof path === 'undefined' ? 'undefined' : _typeof(path)) === 'object' && path.state !== undefined && state !== undefined), 'You should avoid providing a 2nd state argument to replace when the 1st ' + 'argument is a location-like object that already has state; it is ignored');
-
-      var action = 'REPLACE';
-      var location = (0, _LocationUtils.createLocation)(path, state, createKey(), history.location);
-
-      transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) {
-        if (!ok) return;
-
-        var href = createHref(location);
-        var key = location.key,
-            state = location.state;
-
-
-        if (canUseHistory) {
-          globalHistory.replaceState({ key: key, state: state }, null, href);
-
-          if (forceRefresh) {
-            window.location.replace(href);
-          } else {
-            var prevIndex = allKeys.indexOf(history.location.key);
-
-            if (prevIndex !== -1) allKeys[prevIndex] = location.key;
-
-            setState({ action: action, location: location });
-          }
-        } else {
-          (0, _warning2.default)(state === undefined, 'Browser history cannot replace state in browsers that do not support HTML5 history');
-
-          window.location.replace(href);
-        }
-      });
-    };
-
-    var go = function go(n) {
-      globalHistory.go(n);
-    };
-
-    var goBack = function goBack() {
-      return go(-1);
-    };
-
-    var goForward = function goForward() {
-      return go(1);
-    };
-
-    var listenerCount = 0;
-
-    var checkDOMListeners = function checkDOMListeners(delta) {
-      listenerCount += delta;
-
-      if (listenerCount === 1) {
-        (0, _DOMUtils.addEventListener)(window, PopStateEvent, handlePopState);
-
-        if (needsHashChangeListener) (0, _DOMUtils.addEventListener)(window, HashChangeEvent, handleHashChange);
-      } else if (listenerCount === 0) {
-        (0, _DOMUtils.removeEventListener)(window, PopStateEvent, handlePopState);
-
-        if (needsHashChangeListener) (0, _DOMUtils.removeEventListener)(window, HashChangeEvent, handleHashChange);
-      }
-    };
-
-    var isBlocked = false;
-
-    var block = function block() {
-      var prompt = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
-
-      var unblock = transitionManager.setPrompt(prompt);
-
-      if (!isBlocked) {
-        checkDOMListeners(1);
-        isBlocked = true;
-      }
-
-      return function () {
-        if (isBlocked) {
-          isBlocked = false;
-          checkDOMListeners(-1);
-        }
-
-        return unblock();
-      };
-    };
-
-    var listen = function listen(listener) {
-      var unlisten = transitionManager.appendListener(listener);
-      checkDOMListeners(1);
-
-      return function () {
-        checkDOMListeners(-1);
-        unlisten();
-      };
-    };
-
-    var history = {
-      length: globalHistory.length,
-      action: 'POP',
-      location: initialLocation,
-      createHref: createHref,
-      push: push,
-      replace: replace,
-      go: go,
-      goBack: goBack,
-      goForward: goForward,
-      block: block,
-      listen: listen
-    };
-
-    return history;
-  };
-</pre>
+            <h3 id="history-methods-createBrowserHistory"><a href="#history-methods-createBrowserHistory" class="headerlink" title="history methods createBrowserHistory"></a>history methods createBrowserHistory</h3><p>通过之前我们已经知道了react-router-dom的<browserrouter> history模式使用的是history库中的createBrowserHistory方法。下面我们来一起看看其中的奥秘。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br></pre></td><td class="code"><pre><span class="line">var createBrowserHistory = function createBrowserHistory() &#123;</span><br><span class="line">  //  arguments[0], 由上一节可知它是一个非必传的object</span><br><span class="line">  var props = arguments.length &gt; 0 &amp;&amp; arguments[0] !== undefined ? arguments[0] : &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  (0, _invariant2.default)(_DOMUtils.canUseDOM, &apos;Browser history needs a DOM&apos;);</span><br><span class="line">  //  之前将history赋值给变量globalHistory</span><br><span class="line">  var globalHistory = window.history;</span><br><span class="line">  //  _DOMUtils.js 中处理一些浏览器兼容性 和 浏览器内核、机型判断的方法</span><br><span class="line">  //  判断是否非主流机型以及浏览器</span><br><span class="line">  var canUseHistory = (0, _DOMUtils.supportsHistory)();</span><br><span class="line">  //  是否为IE浏览器</span><br><span class="line">  var needsHashChangeListener = !(0, _DOMUtils.supportsPopStateOnHashChange)();</span><br><span class="line">  //  forceRefresh为true，代表将在页面导航时使用完整页面刷新。其他参数请自行参考官网文档</span><br><span class="line">  var _props$forceRefresh = props.forceRefresh,</span><br><span class="line">      forceRefresh = _props$forceRefresh === undefined ? false : _props$forceRefresh,</span><br><span class="line">      _props$getUserConfirm = props.getUserConfirmation,</span><br><span class="line">      getUserConfirmation = _props$getUserConfirm === undefined ? _DOMUtils.getConfirmation : _props$getUserConfirm,</span><br><span class="line">      _props$keyLength = props.keyLength,</span><br><span class="line">      keyLength = _props$keyLength === undefined ? 6 : _props$keyLength;</span><br><span class="line"></span><br><span class="line">  var basename = props.basename ? (0, _PathUtils.stripTrailingSlash)((0, _PathUtils.addLeadingSlash)(props.basename)) : &apos;&apos;;</span><br><span class="line"></span><br><span class="line">  var getDOMLocation = function getDOMLocation(historyState) &#123;</span><br><span class="line">    var _ref = historyState || &#123;&#125;,</span><br><span class="line">        key = _ref.key,</span><br><span class="line">        state = _ref.state;</span><br><span class="line"></span><br><span class="line">    var _window$location = window.location,</span><br><span class="line">        pathname = _window$location.pathname,</span><br><span class="line">        search = _window$location.search,</span><br><span class="line">        hash = _window$location.hash;</span><br><span class="line"></span><br><span class="line">    var path = pathname + search + hash;</span><br><span class="line"></span><br><span class="line">    (0, _warning2.default)(!basename || (0, _PathUtils.hasBasename)(path, basename), &apos;You are attempting to use a basename on a page whose URL path does not begin &apos; + &apos;with the basename. Expected path &quot;&apos; + path + &apos;&quot; to begin with &quot;&apos; + basename + &apos;&quot;.&apos;);</span><br><span class="line"></span><br><span class="line">    if (basename) path = (0, _PathUtils.stripBasename)(path, basename);</span><br><span class="line"></span><br><span class="line">    return (0, _LocationUtils.createLocation)(path, state, key);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  var createKey = function createKey() &#123;</span><br><span class="line">    return Math.random().toString(36).substr(2, keyLength);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  var transitionManager = (0, _createTransitionManager2.default)();</span><br><span class="line"></span><br><span class="line">  var setState = function setState(nextState) &#123;</span><br><span class="line">    _extends(history, nextState);</span><br><span class="line"></span><br><span class="line">    history.length = globalHistory.length;</span><br><span class="line"></span><br><span class="line">    transitionManager.notifyListeners(history.location, history.action);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  var handlePopState = function handlePopState(event) &#123;</span><br><span class="line">    if ((0, _DOMUtils.isExtraneousPopstateEvent)(event)) return;</span><br><span class="line"></span><br><span class="line">    handlePop(getDOMLocation(event.state));</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  var handleHashChange = function handleHashChange() &#123;</span><br><span class="line">    handlePop(getDOMLocation(getHistoryState()));</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  var forceNextPop = false;</span><br><span class="line"></span><br><span class="line">  var handlePop = function handlePop(location) &#123;</span><br><span class="line">    if (forceNextPop) &#123;</span><br><span class="line">      forceNextPop = false;</span><br><span class="line">      setState();</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      var action = &apos;POP&apos;;</span><br><span class="line"></span><br><span class="line">      transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) &#123;</span><br><span class="line">        if (ok) &#123;</span><br><span class="line">          setState(&#123; action: action, location: location &#125;);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          revertPop(location);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  var revertPop = function revertPop(fromLocation) &#123;</span><br><span class="line">    var toLocation = history.location;</span><br><span class="line"></span><br><span class="line">    // TODO: We could probably make this more reliable by</span><br><span class="line">    // keeping a list of keys we&apos;ve seen in sessionStorage.</span><br><span class="line">    // Instead, we just default to 0 for keys we don&apos;t know.</span><br><span class="line"></span><br><span class="line">    var toIndex = allKeys.indexOf(toLocation.key);</span><br><span class="line"></span><br><span class="line">    if (toIndex === -1) toIndex = 0;</span><br><span class="line"></span><br><span class="line">    var fromIndex = allKeys.indexOf(fromLocation.key);</span><br><span class="line"></span><br><span class="line">    if (fromIndex === -1) fromIndex = 0;</span><br><span class="line"></span><br><span class="line">    var delta = toIndex - fromIndex;</span><br><span class="line"></span><br><span class="line">    if (delta) &#123;</span><br><span class="line">      forceNextPop = true;</span><br><span class="line">      go(delta);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  var initialLocation = getDOMLocation(getHistoryState());</span><br><span class="line">  var allKeys = [initialLocation.key];</span><br><span class="line"></span><br><span class="line">  var createHref = function createHref(location) &#123;</span><br><span class="line">    return basename + (0, _PathUtils.createPath)(location);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  var push = function push(path, state) &#123;</span><br><span class="line">    (0, _warning2.default)(!((typeof path === &apos;undefined&apos; ? &apos;undefined&apos; : _typeof(path)) === &apos;object&apos; &amp;&amp; path.state !== undefined &amp;&amp; state !== undefined), &apos;You should avoid providing a 2nd state argument to push when the 1st &apos; + &apos;argument is a location-like object that already has state; it is ignored&apos;);</span><br><span class="line"></span><br><span class="line">    var action = &apos;PUSH&apos;;</span><br><span class="line">    //  重写location对象</span><br><span class="line">    var location = (0, _LocationUtils.createLocation)(path, state, createKey(), history.location);</span><br><span class="line"></span><br><span class="line">    transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) &#123;</span><br><span class="line">      if (!ok) return;</span><br><span class="line"></span><br><span class="line">      var href = createHref(location);</span><br><span class="line">      var key = location.key,</span><br><span class="line">          state = location.state;</span><br><span class="line"></span><br><span class="line">      if (canUseHistory) &#123;</span><br><span class="line">        globalHistory.pushState(&#123; key: key, state: state &#125;, null, href);</span><br><span class="line"></span><br><span class="line">        if (forceRefresh) &#123;</span><br><span class="line">          window.location.href = href;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          var prevIndex = allKeys.indexOf(history.location.key);</span><br><span class="line">          var nextKeys = allKeys.slice(0, prevIndex === -1 ? 0 : prevIndex + 1);</span><br><span class="line"></span><br><span class="line">          nextKeys.push(location.key);</span><br><span class="line">          allKeys = nextKeys;</span><br><span class="line"></span><br><span class="line">          setState(&#123; action: action, location: location &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        (0, _warning2.default)(state === undefined, &apos;Browser history cannot push state in browsers that do not support HTML5 history&apos;);</span><br><span class="line"></span><br><span class="line">        window.location.href = href;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  var replace = function replace(path, state) &#123;</span><br><span class="line">    (0, _warning2.default)(!((typeof path === &apos;undefined&apos; ? &apos;undefined&apos; : _typeof(path)) === &apos;object&apos; &amp;&amp; path.state !== undefined &amp;&amp; state !== undefined), &apos;You should avoid providing a 2nd state argument to replace when the 1st &apos; + &apos;argument is a location-like object that already has state; it is ignored&apos;);</span><br><span class="line"></span><br><span class="line">    var action = &apos;REPLACE&apos;;</span><br><span class="line">    var location = (0, _LocationUtils.createLocation)(path, state, createKey(), history.location);</span><br><span class="line"></span><br><span class="line">    transitionManager.confirmTransitionTo(location, action, getUserConfirmation, function (ok) &#123;</span><br><span class="line">      if (!ok) return;</span><br><span class="line"></span><br><span class="line">      var href = createHref(location);</span><br><span class="line">      var key = location.key,</span><br><span class="line">          state = location.state;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">      if (canUseHistory) &#123;</span><br><span class="line">        globalHistory.replaceState(&#123; key: key, state: state &#125;, null, href);</span><br><span class="line"></span><br><span class="line">        if (forceRefresh) &#123;</span><br><span class="line">          window.location.replace(href);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          var prevIndex = allKeys.indexOf(history.location.key);</span><br><span class="line"></span><br><span class="line">          if (prevIndex !== -1) allKeys[prevIndex] = location.key;</span><br><span class="line"></span><br><span class="line">          setState(&#123; action: action, location: location &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        (0, _warning2.default)(state === undefined, &apos;Browser history cannot replace state in browsers that do not support HTML5 history&apos;);</span><br><span class="line"></span><br><span class="line">        window.location.replace(href);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  var go = function go(n) &#123;</span><br><span class="line">    globalHistory.go(n);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  var goBack = function goBack() &#123;</span><br><span class="line">    return go(-1);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  var goForward = function goForward() &#123;</span><br><span class="line">    return go(1);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  var listenerCount = 0;</span><br><span class="line"></span><br><span class="line">  var checkDOMListeners = function checkDOMListeners(delta) &#123;</span><br><span class="line">    listenerCount += delta;</span><br><span class="line"></span><br><span class="line">    if (listenerCount === 1) &#123;</span><br><span class="line">      (0, _DOMUtils.addEventListener)(window, PopStateEvent, handlePopState);</span><br><span class="line"></span><br><span class="line">      if (needsHashChangeListener) (0, _DOMUtils.addEventListener)(window, HashChangeEvent, handleHashChange);</span><br><span class="line">    &#125; else if (listenerCount === 0) &#123;</span><br><span class="line">      (0, _DOMUtils.removeEventListener)(window, PopStateEvent, handlePopState);</span><br><span class="line"></span><br><span class="line">      if (needsHashChangeListener) (0, _DOMUtils.removeEventListener)(window, HashChangeEvent, handleHashChange);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  var isBlocked = false;</span><br><span class="line"></span><br><span class="line">  var block = function block() &#123;</span><br><span class="line">    var prompt = arguments.length &gt; 0 &amp;&amp; arguments[0] !== undefined ? arguments[0] : false;</span><br><span class="line"></span><br><span class="line">    var unblock = transitionManager.setPrompt(prompt);</span><br><span class="line"></span><br><span class="line">    if (!isBlocked) &#123;</span><br><span class="line">      checkDOMListeners(1);</span><br><span class="line">      isBlocked = true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return function () &#123;</span><br><span class="line">      if (isBlocked) &#123;</span><br><span class="line">        isBlocked = false;</span><br><span class="line">        checkDOMListeners(-1);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      return unblock();</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  var listen = function listen(listener) &#123;</span><br><span class="line">    var unlisten = transitionManager.appendListener(listener);</span><br><span class="line">    checkDOMListeners(1);</span><br><span class="line"></span><br><span class="line">    return function () &#123;</span><br><span class="line">      checkDOMListeners(-1);</span><br><span class="line">      unlisten();</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  var history = &#123;</span><br><span class="line">    length: globalHistory.length,</span><br><span class="line">    action: &apos;POP&apos;,</span><br><span class="line">    location: initialLocation,</span><br><span class="line">    createHref: createHref,</span><br><span class="line">    push: push,</span><br><span class="line">    replace: replace,</span><br><span class="line">    go: go,</span><br><span class="line">    goBack: goBack,</span><br><span class="line">    goForward: goForward,</span><br><span class="line">    block: block,</span><br><span class="line">    listen: listen</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  return history;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></browserrouter></p>
 
           
         
@@ -1068,7 +810,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-09-05 17:01:19" itemprop="dateModified" datetime="2018-09-05T17:01:19+08:00">2018-09-05</time>
+                <time title="修改时间：2018-09-06 18:35:18" itemprop="dateModified" datetime="2018-09-06T18:35:18+08:00">2018-09-06</time>
               
             
           </span>
@@ -1104,64 +846,12 @@
         
           
             <h3 id="react-router-的路由实现"><a href="#react-router-的路由实现" class="headerlink" title="react-router 的路由实现"></a>react-router 的路由实现</h3><p>既然知道了这个原理，我们来看下 react-router 的实现，我们打开 <a href="https://github.com/ReactTraining/react-router" target="_blank" rel="noopener">react-router 项目地址</a>,把项目克隆下来，或则直接在 github 上预览，在 React 开发的项目里，我们通过 router.push(‘home’) 来实现页面的跳转，所以我们检索下，push 方法的实现</p>
-<p><img src="/images/router/1.jpg" alt="push方法检索"></p>
+<p><img src="/images/1.jpg" alt="push方法检索"></p>
 <p>我们检索到了 46个 js 文件，😂，一般到这个时候，我们会放弃源码阅读，那么我们今天的文章就到这结束，谢谢大家！</p>
 <p>开个玩笑，源码阅读不能这么粗糙，react-router 4.x用法，我们只需要安装 react-router-dom。所以我们找到 package 下的 react-router-dom/modules 目录，点开 <code>index.js</code> 文件。</p>
-<pre>
-  export BrowserRouter from "./BrowserRouter";
-  export HashRouter from "./HashRouter";
-  export Link from "./Link";
-  export MemoryRouter from "./MemoryRouter";
-  export NavLink from "./NavLink";
-  export Prompt from "./Prompt";
-  export Redirect from "./Redirect";
-  export Route from "./Route";
-  export Router from "./Router";
-  export StaticRouter from "./StaticRouter";
-  export Switch from "./Switch";
-  export generatePath from "./generatePath";
-  export matchPath from "./matchPath";
-  export withRouter from "./withRouter";
-</pre>
-
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">export BrowserRouter from &quot;./BrowserRouter&quot;;</span><br><span class="line">export HashRouter from &quot;./HashRouter&quot;;</span><br><span class="line">export Link from &quot;./Link&quot;;</span><br><span class="line">export MemoryRouter from &quot;./MemoryRouter&quot;;</span><br><span class="line">export NavLink from &quot;./NavLink&quot;;</span><br><span class="line">export Prompt from &quot;./Prompt&quot;;</span><br><span class="line">export Redirect from &quot;./Redirect&quot;;</span><br><span class="line">export Route from &quot;./Route&quot;;</span><br><span class="line">export Router from &quot;./Router&quot;;</span><br><span class="line">export StaticRouter from &quot;./StaticRouter&quot;;</span><br><span class="line">export Switch from &quot;./Switch&quot;;</span><br><span class="line">export generatePath from &quot;./generatePath&quot;;</span><br><span class="line">export matchPath from &quot;./matchPath&quot;;</span><br><span class="line">export withRouter from &quot;./withRouter&quot;;</span><br></pre></td></tr></table></figure>
 <p>看到 history 对象的实例与配置的 mode 有关，react-router-dom 通过3种方式实现了路由切换。我们今天讲的内容相匹配的是 <code>createBrowserHistory</code> 的实现方案 (另外两个分别是：createHashHistory和createMemoryHistory)。 这里 react-router-dom 将 BrowserRouter、HashRouter、Link 拆分为单独组件实现，也是与 react-router 3 之间的区别之一。<br><a href="https://github.com/ReactTraining/history#blocking-transitions" target="_blank" rel="noopener">详细文档</a><br>我们来看 react-router-dom 中的 BrowserRouter 源码：</p>
-<pre>
-    import warning from "warning";
-    import React from "react";
-    import PropTypes from "prop-types";
-    import { createBrowserHistory as createHistory } from "history";
-    import Router from "./Router";
-
-    /**
-    * The public API for a <router> that uses HTML5 history.
-    */
-    class BrowserRouter extends React.Component {
-      static propTypes = {
-        basename: PropTypes.string,
-        forceRefresh: PropTypes.bool,
-        getUserConfirmation: PropTypes.func,
-        keyLength: PropTypes.number,
-        children: PropTypes.node
-      };
-
-      history = createHistory(this.props);
-
-      componentWillMount() {
-        warning(
-          !this.props.history,
-          "<browserrouter> ignores the history prop. To use a custom history, " +
-            "use `import { Router }` instead of `import { BrowserRouter as Router }`."
-        );
-      }
-
-      render() {
-        return <router history="{this.history}" children="{this.props.children}">;
-      }
-    }
-
-    export default BrowserRouter;
-</router></browserrouter></router></pre>
-
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">import warning from &quot;warning&quot;;</span><br><span class="line">import React from &quot;react&quot;;</span><br><span class="line">import PropTypes from &quot;prop-types&quot;;</span><br><span class="line">import &#123; createBrowserHistory as createHistory &#125; from &quot;history&quot;;</span><br><span class="line">import Router from &quot;./Router&quot;;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">* The public API for a &lt;Router&gt; that uses HTML5 history.</span><br><span class="line">*/</span><br><span class="line">class BrowserRouter extends React.Component &#123;</span><br><span class="line">  static propTypes = &#123;</span><br><span class="line">    basename: PropTypes.string,</span><br><span class="line">    forceRefresh: PropTypes.bool,</span><br><span class="line">    getUserConfirmation: PropTypes.func,</span><br><span class="line">    keyLength: PropTypes.number,</span><br><span class="line">    children: PropTypes.node</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  history = createHistory(this.props);</span><br><span class="line"></span><br><span class="line">  componentWillMount() &#123;</span><br><span class="line">    warning(</span><br><span class="line">      !this.props.history,</span><br><span class="line">      &quot;&lt;BrowserRouter&gt; ignores the history prop. To use a custom history, &quot; +</span><br><span class="line">        &quot;use `import &#123; Router &#125;` instead of `import &#123; BrowserRouter as Router &#125;`.&quot;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    return &lt;Router history=&#123;this.history&#125; children=&#123;this.props.children&#125; /&gt;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default BrowserRouter;</span><br></pre></td></tr></table></figure>
 <p>由上可知我们在项目中使用的<browserrouter>组件，history方式是使用了一个叫<a href="https://github.com/ReactTraining/history" target="_blank" rel="noopener">history</a>库中的 createBrowserHistory 方法。</browserrouter></p>
 <h3 id="模拟单页面路由"><a href="#模拟单页面路由" class="headerlink" title="模拟单页面路由"></a>模拟单页面路由</h3><p>通过上面的学习，我们知道了，单页面应用路由的实现原理，我们也尝试去实现一个。在做管理系统的时候，我们通常会在页面的左侧放置一个固定的导航 sidebar，页面的右侧放与之匹配的内容 main 。点击导航时，我们只希望内容进行更新，如果刷新了整个页面，到时导航和通用的头部底部也进行重绘重排的话，十分浪费资源，体验也会不好。这个时候，我们就能用到我们今天学习到的内容，通过使用 HTML5 的 pushState 方法和 replaceState 方法来实现，</p>
 <p>思路：首先绑定 click 事件。当用户点击一个链接时，通过 preventDefault 函数防止默认的行为（页面跳转），同时读取链接的地址（如果有 jQuery，可以写成$(this).attr(‘href’)），把这个地址通过pushState塞入浏览器历史记录中，再利用 AJAX 技术拉取（如果有 jQuery，可以使用$.get方法）这个地址中真正的内容，同时替换当前网页的内容。</p>
@@ -1285,7 +975,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-09-05 17:01:13" itemprop="dateModified" datetime="2018-09-05T17:01:13+08:00">2018-09-05</time>
+                <time title="修改时间：2018-09-05 18:33:12" itemprop="dateModified" datetime="2018-09-05T18:33:12+08:00">2018-09-05</time>
               
             
           </span>
@@ -1333,37 +1023,13 @@
 <blockquote>
 <p>state：一个与指定网址相关的状态对象，popstate事件触发时，该对象会传入回调函数。如果不需要这个对象，此处可以填null。<br>title：新页面的标题，但是所有浏览器目前都忽略这个值，因此这里可以填null。<br>url：新的网址，必须与当前页面处在同一个域。浏览器的地址栏将显示这个网址。<br>假定当前网址是example.com/1.html，我们使用pushState方法在浏览记录（history对象）中添加一个新记录。</p>
 </blockquote>
-<pre>
-    var stateObj = { foo: 'bar' };
-    history.pushState(stateObj, 'page 2', '2.html');
-</pre>
-
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var stateObj = &#123; foo: &apos;bar&apos; &#125;;</span><br><span class="line">history.pushState(stateObj, &apos;page 2&apos;, &apos;2.html&apos;);</span><br></pre></td></tr></table></figure>
 <p>添加上面这个新记录后，浏览器地址栏立刻显示 example.com/2.html，但并不会跳转到 2.html，甚至也不会检查2.html 是否存在，它只是成为浏览历史中的最新记录。这时，你在地址栏输入一个新的地址(比如访问 google.com )，然后点击了倒退按钮，页面的 URL 将显示 2.html；你再点击一次倒退按钮，URL 将显示 1.html。</p>
 <p>总之，pushState 方法不会触发页面刷新，只是导致 history 对象发生变化，地址栏会有反应。</p>
 <p>如果 pushState 的 url参数，设置了一个新的锚点值（即hash），并不会触发 hashchange 事件。如果设置了一个跨域网址，则会报错。</p>
-<pre>
-    // 报错
-    history.pushState(null, null, 'https://twitter.com/hello');
-
-    上面代码中，pushState想要插入一个跨域的网址，导致报错。这样设计的目的是，防止恶意代码让用户以为他们是在另一个网站上。
-</pre>
-
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 报错</span><br><span class="line">history.pushState(null, null, &apos;https://twitter.com/hello&apos;);</span><br><span class="line"></span><br><span class="line">上面代码中，pushState想要插入一个跨域的网址，导致报错。这样设计的目的是，防止恶意代码让用户以为他们是在另一个网站上。</span><br></pre></td></tr></table></figure>
 <h4 id="history-replaceState"><a href="#history-replaceState" class="headerlink" title="history.replaceState"></a>history.replaceState</h4><p>history.replaceState 方法的参数与 pushState 方法一模一样，区别是它修改浏览历史中当前纪录,假定当前网页是 example.com/example.html。</p>
-<pre>
-    history.pushState({page: 1}, 'title 1', '?page=1');
-    history.pushState({page: 2}, 'title 2', '?page=2');
-    history.replaceState({page: 3}, 'title 3', '?page=3');
-
-    history.back()
-    // url显示为http://example.com/example.html?page=1
-
-    history.back()
-    // url显示为http://example.com/example.html
-
-    history.go(2)
-    // url显示为http://example.com/example.html?page=3
-
-</pre>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">history.pushState(&#123;page: 1&#125;, &apos;title 1&apos;, &apos;?page=1&apos;);</span><br><span class="line">history.pushState(&#123;page: 2&#125;, &apos;title 2&apos;, &apos;?page=2&apos;);</span><br><span class="line">history.replaceState(&#123;page: 3&#125;, &apos;title 3&apos;, &apos;?page=3&apos;);</span><br><span class="line"></span><br><span class="line">history.back()</span><br><span class="line">// url显示为http://example.com/example.html?page=1</span><br><span class="line"></span><br><span class="line">history.back()</span><br><span class="line">// url显示为http://example.com/example.html</span><br><span class="line"></span><br><span class="line">history.go(2)</span><br><span class="line">// url显示为http://example.com/example.html?page=3</span><br></pre></td></tr></table></figure>
           
         
       
@@ -1853,6 +1519,14 @@
 
 
         
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
 
 
 

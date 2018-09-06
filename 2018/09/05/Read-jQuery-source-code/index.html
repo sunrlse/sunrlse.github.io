@@ -117,7 +117,7 @@
 <meta property="og:image" content="https://sunrlse.github.io/images/jquery_structure.png">
 <meta property="og:image" content="https://sunrlse.github.io/images/prevObject.jpg">
 <meta property="og:image" content="https://sunrlse.github.io/images/noconflict.jpg">
-<meta property="og:updated_time" content="2018-09-05T10:21:29.631Z">
+<meta property="og:updated_time" content="2018-09-05T10:49:49.659Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Read: jQuery source code">
 <meta name="twitter:description" content="jQuery 整体架构 jQuery 闭包结构123(function(window, undefined)&amp;#123;    // jQuery code&amp;#125;)(window) jQuery 具体的实现，都被包含在了一个立即执行函数构造的闭包里面，为了不污染全局作用域，最终只暴露 $ 和 jQuery 两个变量给外界，尽量避开变量冲突。 jQuery 无 new 构造通常，实例化一个jQ">
@@ -327,7 +327,7 @@
                 
               
 
-              <time title="创建时间：2018-09-05 17:14:19 / 修改时间：18:21:29" itemprop="dateCreated datePublished" datetime="2018-09-05T17:14:19+08:00">2018-09-05</time>
+              <time title="创建时间：2018-09-05 17:14:19 / 修改时间：18:49:49" itemprop="dateCreated datePublished" datetime="2018-09-05T17:14:19+08:00">2018-09-05</time>
             
 
             
@@ -346,6 +346,14 @@
           
           
 
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
           
 
           
@@ -398,7 +406,7 @@
 <h3 id="jQuery-变量冲突处理"><a href="#jQuery-变量冲突处理" class="headerlink" title="jQuery 变量冲突处理"></a>jQuery 变量冲突处理</h3><p>最后想提一提 jQuery 变量的冲突处理，通过一开始保存全局变量的 window.jQuery 以及 windw.$ 。<br>当需要处理冲突的时候，调用静态方法 noConflict()，让出变量的控制权，源码如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">(function(window, undefined) &#123;</span><br><span class="line">    var</span><br><span class="line">        // Map over jQuery in case of overwrite</span><br><span class="line">        // 设置别名，通过两个私有变量映射了 window 环境下的 jQuery 和 $ 两个对象，以防止变量被强行覆盖</span><br><span class="line">        _jQuery = window.jQuery,</span><br><span class="line">        _$ = window.$;</span><br><span class="line"> </span><br><span class="line">    jQuery.extend(&#123;</span><br><span class="line">        // noConflict() 方法让出变量 $ 的 jQuery 控制权，这样其他脚本就可以使用它了</span><br><span class="line">        // 通过全名替代简写的方式来使用 jQuery</span><br><span class="line">        // deep -- 布尔值，指示是否允许彻底将 jQuery 变量还原(移交 $ 引用的同时是否移交 jQuery 对象本身)</span><br><span class="line">        noConflict: function(deep) &#123;</span><br><span class="line">            // 判断全局 $ 变量是否等于 jQuery 变量</span><br><span class="line">            // 如果等于，则重新还原全局变量 $ 为 jQuery 运行之前的变量（存储在内部变量 _$ 中）</span><br><span class="line">            if (window.$ === jQuery) &#123;</span><br><span class="line">                // 此时 jQuery 别名 $ 失效</span><br><span class="line">                window.$ = _$;</span><br><span class="line">            &#125;</span><br><span class="line">            // 当开启深度冲突处理并且全局变量 jQuery 等于内部 jQuery，则把全局 jQuery 还原成之前的状况</span><br><span class="line">            if (deep &amp;&amp; window.jQuery === jQuery) &#123;</span><br><span class="line">                // 如果 deep 为 true，此时 jQuery 失效</span><br><span class="line">                window.jQuery = _jQuery;</span><br><span class="line">            &#125;</span><br><span class="line"> </span><br><span class="line">            // 这里返回的是 jQuery 库内部的 jQuery 构造函数（new jQuery.fn.init()）</span><br><span class="line">            // 像使用 $ 一样尽情使用它吧</span><br><span class="line">            return jQuery;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;(window)</span><br></pre></td></tr></table></figure></p>
 <p>画了一幅简单的流程图帮助理解:<br><img src="/images/noconflict.jpg" alt="变量冲突"><br>那么让出了这两个符号之后，是否就不能在我们的代码中使用 jQuery 或者呢 $ 呢？莫慌，还是可以使用的:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 让出 jQuery 、$ 的控制权不代表不能使用 jQuery 和 $ ，方法如下：</span><br><span class="line">var query = jQuery.noConflict(true);</span><br><span class="line"> </span><br><span class="line">(function($) &#123;</span><br><span class="line"> </span><br><span class="line">// 插件或其他形式的代码，也可以将参数设为 jQuery</span><br><span class="line">&#125;)(query);</span><br><span class="line"> </span><br><span class="line">//  ... 其他用 $ 作为别名的库的代码</span><br></pre></td></tr></table></figure></p>
 <p>原文出自<a href="https://www.cnblogs.com/coco1s/p/5261646.html" target="_blank" rel="noopener">ChokCoco</a></p>
-
+<a id="more"></a>
       
     </div>
 
@@ -634,6 +642,14 @@
 
 
         
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
 
 
 

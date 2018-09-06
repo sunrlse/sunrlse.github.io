@@ -114,12 +114,12 @@
 <meta property="og:site_name" content="狗林">
 <meta property="og:description" content="react-router 的路由实现既然知道了这个原理，我们来看下 react-router 的实现，我们打开 react-router 项目地址,把项目克隆下来，或则直接在 github 上预览，在 React 开发的项目里，我们通过 router.push(‘home’) 来实现页面的跳转，所以我们检索下，push 方法的实现  我们检索到了 46个 js 文件，😂，一般到这个时候，我们会放">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://sunrlse.github.io/images/router/1.jpg">
-<meta property="og:updated_time" content="2018-09-05T09:01:19.711Z">
+<meta property="og:image" content="https://sunrlse.github.io/images/1.jpg">
+<meta property="og:updated_time" content="2018-09-06T10:35:18.017Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="react-router解读（二）">
 <meta name="twitter:description" content="react-router 的路由实现既然知道了这个原理，我们来看下 react-router 的实现，我们打开 react-router 项目地址,把项目克隆下来，或则直接在 github 上预览，在 React 开发的项目里，我们通过 router.push(‘home’) 来实现页面的跳转，所以我们检索下，push 方法的实现  我们检索到了 46个 js 文件，😂，一般到这个时候，我们会放">
-<meta name="twitter:image" content="https://sunrlse.github.io/images/router/1.jpg">
+<meta name="twitter:image" content="https://sunrlse.github.io/images/1.jpg">
 
 
 
@@ -342,7 +342,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-09-05 17:01:19" itemprop="dateModified" datetime="2018-09-05T17:01:19+08:00">2018-09-05</time>
+                <time title="修改时间：2018-09-06 18:35:18" itemprop="dateModified" datetime="2018-09-06T18:35:18+08:00">2018-09-06</time>
               
             
           </span>
@@ -356,6 +356,14 @@
           
           
 
+          
+            <span class="post-meta-divider">|</span>
+            <span class="post-meta-item-icon"
+            >
+            <i class="fa fa-eye"></i>
+             阅读次数： 
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
           
 
           
@@ -376,64 +384,12 @@
 
       
         <h3 id="react-router-的路由实现"><a href="#react-router-的路由实现" class="headerlink" title="react-router 的路由实现"></a>react-router 的路由实现</h3><p>既然知道了这个原理，我们来看下 react-router 的实现，我们打开 <a href="https://github.com/ReactTraining/react-router" target="_blank" rel="noopener">react-router 项目地址</a>,把项目克隆下来，或则直接在 github 上预览，在 React 开发的项目里，我们通过 router.push(‘home’) 来实现页面的跳转，所以我们检索下，push 方法的实现</p>
-<p><img src="/images/router/1.jpg" alt="push方法检索"></p>
+<p><img src="/images/1.jpg" alt="push方法检索"></p>
 <p>我们检索到了 46个 js 文件，😂，一般到这个时候，我们会放弃源码阅读，那么我们今天的文章就到这结束，谢谢大家！</p>
 <p>开个玩笑，源码阅读不能这么粗糙，react-router 4.x用法，我们只需要安装 react-router-dom。所以我们找到 package 下的 react-router-dom/modules 目录，点开 <code>index.js</code> 文件。</p>
-<pre>
-  export BrowserRouter from "./BrowserRouter";
-  export HashRouter from "./HashRouter";
-  export Link from "./Link";
-  export MemoryRouter from "./MemoryRouter";
-  export NavLink from "./NavLink";
-  export Prompt from "./Prompt";
-  export Redirect from "./Redirect";
-  export Route from "./Route";
-  export Router from "./Router";
-  export StaticRouter from "./StaticRouter";
-  export Switch from "./Switch";
-  export generatePath from "./generatePath";
-  export matchPath from "./matchPath";
-  export withRouter from "./withRouter";
-</pre>
-
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">export BrowserRouter from &quot;./BrowserRouter&quot;;</span><br><span class="line">export HashRouter from &quot;./HashRouter&quot;;</span><br><span class="line">export Link from &quot;./Link&quot;;</span><br><span class="line">export MemoryRouter from &quot;./MemoryRouter&quot;;</span><br><span class="line">export NavLink from &quot;./NavLink&quot;;</span><br><span class="line">export Prompt from &quot;./Prompt&quot;;</span><br><span class="line">export Redirect from &quot;./Redirect&quot;;</span><br><span class="line">export Route from &quot;./Route&quot;;</span><br><span class="line">export Router from &quot;./Router&quot;;</span><br><span class="line">export StaticRouter from &quot;./StaticRouter&quot;;</span><br><span class="line">export Switch from &quot;./Switch&quot;;</span><br><span class="line">export generatePath from &quot;./generatePath&quot;;</span><br><span class="line">export matchPath from &quot;./matchPath&quot;;</span><br><span class="line">export withRouter from &quot;./withRouter&quot;;</span><br></pre></td></tr></table></figure>
 <p>看到 history 对象的实例与配置的 mode 有关，react-router-dom 通过3种方式实现了路由切换。我们今天讲的内容相匹配的是 <code>createBrowserHistory</code> 的实现方案 (另外两个分别是：createHashHistory和createMemoryHistory)。 这里 react-router-dom 将 BrowserRouter、HashRouter、Link 拆分为单独组件实现，也是与 react-router 3 之间的区别之一。<br><a href="https://github.com/ReactTraining/history#blocking-transitions" target="_blank" rel="noopener">详细文档</a><br>我们来看 react-router-dom 中的 BrowserRouter 源码：</p>
-<pre>
-    import warning from "warning";
-    import React from "react";
-    import PropTypes from "prop-types";
-    import { createBrowserHistory as createHistory } from "history";
-    import Router from "./Router";
-
-    /**
-    * The public API for a <router> that uses HTML5 history.
-    */
-    class BrowserRouter extends React.Component {
-      static propTypes = {
-        basename: PropTypes.string,
-        forceRefresh: PropTypes.bool,
-        getUserConfirmation: PropTypes.func,
-        keyLength: PropTypes.number,
-        children: PropTypes.node
-      };
-
-      history = createHistory(this.props);
-
-      componentWillMount() {
-        warning(
-          !this.props.history,
-          "<browserrouter> ignores the history prop. To use a custom history, " +
-            "use `import { Router }` instead of `import { BrowserRouter as Router }`."
-        );
-      }
-
-      render() {
-        return <router history="{this.history}" children="{this.props.children}">;
-      }
-    }
-
-    export default BrowserRouter;
-</router></browserrouter></router></pre>
-
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">import warning from &quot;warning&quot;;</span><br><span class="line">import React from &quot;react&quot;;</span><br><span class="line">import PropTypes from &quot;prop-types&quot;;</span><br><span class="line">import &#123; createBrowserHistory as createHistory &#125; from &quot;history&quot;;</span><br><span class="line">import Router from &quot;./Router&quot;;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line">* The public API for a &lt;Router&gt; that uses HTML5 history.</span><br><span class="line">*/</span><br><span class="line">class BrowserRouter extends React.Component &#123;</span><br><span class="line">  static propTypes = &#123;</span><br><span class="line">    basename: PropTypes.string,</span><br><span class="line">    forceRefresh: PropTypes.bool,</span><br><span class="line">    getUserConfirmation: PropTypes.func,</span><br><span class="line">    keyLength: PropTypes.number,</span><br><span class="line">    children: PropTypes.node</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  history = createHistory(this.props);</span><br><span class="line"></span><br><span class="line">  componentWillMount() &#123;</span><br><span class="line">    warning(</span><br><span class="line">      !this.props.history,</span><br><span class="line">      &quot;&lt;BrowserRouter&gt; ignores the history prop. To use a custom history, &quot; +</span><br><span class="line">        &quot;use `import &#123; Router &#125;` instead of `import &#123; BrowserRouter as Router &#125;`.&quot;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  render() &#123;</span><br><span class="line">    return &lt;Router history=&#123;this.history&#125; children=&#123;this.props.children&#125; /&gt;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export default BrowserRouter;</span><br></pre></td></tr></table></figure>
 <p>由上可知我们在项目中使用的<browserrouter>组件，history方式是使用了一个叫<a href="https://github.com/ReactTraining/history" target="_blank" rel="noopener">history</a>库中的 createBrowserHistory 方法。</browserrouter></p>
 <h3 id="模拟单页面路由"><a href="#模拟单页面路由" class="headerlink" title="模拟单页面路由"></a>模拟单页面路由</h3><p>通过上面的学习，我们知道了，单页面应用路由的实现原理，我们也尝试去实现一个。在做管理系统的时候，我们通常会在页面的左侧放置一个固定的导航 sidebar，页面的右侧放与之匹配的内容 main 。点击导航时，我们只希望内容进行更新，如果刷新了整个页面，到时导航和通用的头部底部也进行重绘重排的话，十分浪费资源，体验也会不好。这个时候，我们就能用到我们今天学习到的内容，通过使用 HTML5 的 pushState 方法和 replaceState 方法来实现，</p>
 <p>思路：首先绑定 click 事件。当用户点击一个链接时，通过 preventDefault 函数防止默认的行为（页面跳转），同时读取链接的地址（如果有 jQuery，可以写成$(this).attr(‘href’)），把这个地址通过pushState塞入浏览器历史记录中，再利用 AJAX 技术拉取（如果有 jQuery，可以使用$.get方法）这个地址中真正的内容，同时替换当前网页的内容。</p>
@@ -681,6 +637,14 @@
 
 
         
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+
+  
+</div>
+
 
 
 
