@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-dancer.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-dancer.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"subrlse.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="iOS 设备开发屏幕分辨率信息物理分辨率是硬件所支持的，逻辑分辨率是软件可以达到的 iPhone   代数 设备 操作系统 逻辑分辨率(point) 物理分辨率(pixel) 屏幕尺寸(对角线长度) 缩放因子    第一代 iPhone 2G iOS 1 320 x 480 480 x 320 3.5寸 1x   第二代 iPhone 3 iOS 2 320 x 480 480 x 320 3.5">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS&amp;iPad备屏幕分辨率信息">
+<meta property="og:url" content="http://subrlse.github.io/2019/07/13/iOS&iPad%E8%AE%BE%E5%A4%87%E5%B1%8F%E5%B9%95%E5%88%86%E8%BE%A8%E7%8E%87/index.html">
+<meta property="og:site_name" content="CoF">
+<meta property="og:description" content="iOS 设备开发屏幕分辨率信息物理分辨率是硬件所支持的，逻辑分辨率是软件可以达到的 iPhone   代数 设备 操作系统 逻辑分辨率(point) 物理分辨率(pixel) 屏幕尺寸(对角线长度) 缩放因子    第一代 iPhone 2G iOS 1 320 x 480 480 x 320 3.5寸 1x   第二代 iPhone 3 iOS 2 320 x 480 480 x 320 3.5">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-07-13T08:03:46.000Z">
+<meta property="article:modified_time" content="2021-08-13T04:13:03.817Z">
+<meta property="article:author" content="forward">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://subrlse.github.io/2019/07/13/iOS&iPad%E8%AE%BE%E5%A4%87%E5%B1%8F%E5%B9%95%E5%88%86%E8%BE%A8%E7%8E%87/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>iOS&iPad备屏幕分辨率信息 | CoF</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">CoF</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Something just like this</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://subrlse.github.io/2019/07/13/iOS&iPad%E8%AE%BE%E5%A4%87%E5%B1%8F%E5%B9%95%E5%88%86%E8%BE%A8%E7%8E%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/dancer.jpg">
+      <meta itemprop="name" content="forward">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoF">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS&iPad备屏幕分辨率信息
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-13 16:03:46" itemprop="dateCreated datePublished" datetime="2019-07-13T16:03:46+08:00">2019-07-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-13 12:13:03" itemprop="dateModified" datetime="2021-08-13T12:13:03+08:00">2021-08-13</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="iOS-设备开发屏幕分辨率信息"><a href="#iOS-设备开发屏幕分辨率信息" class="headerlink" title="iOS 设备开发屏幕分辨率信息"></a>iOS 设备开发屏幕分辨率信息</h3><p><em>物理分辨率是硬件所支持的，逻辑分辨率是软件可以达到的</em></p>
+<h4 id="iPhone"><a href="#iPhone" class="headerlink" title="iPhone"></a>iPhone</h4><table>
+<thead>
+<tr>
+<th>代数</th>
+<th>设备</th>
+<th>操作系统</th>
+<th>逻辑分辨率(point)</th>
+<th>物理分辨率(pixel)</th>
+<th>屏幕尺寸(对角线长度)</th>
+<th>缩放因子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>第一代</td>
+<td>iPhone 2G</td>
+<td>iOS 1</td>
+<td>320 x 480</td>
+<td>480 x 320</td>
+<td>3.5寸</td>
+<td>1x</td>
+</tr>
+<tr>
+<td>第二代</td>
+<td>iPhone 3</td>
+<td>iOS 2</td>
+<td>320 x 480</td>
+<td>480 x 320</td>
+<td>3.5寸</td>
+<td>1x</td>
+</tr>
+<tr>
+<td>第三代</td>
+<td>iPhone 3GS</td>
+<td>iOS 3</td>
+<td>320 x 480</td>
+<td>480 x 320</td>
+<td>3.5寸</td>
+<td>1x</td>
+</tr>
+<tr>
+<td>第四代</td>
+<td>iPhone 4</td>
+<td>iOS 4</td>
+<td>320 x 480</td>
+<td>960 × 640</td>
+<td>3.5寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>第五代</td>
+<td>iPhone 4S</td>
+<td>iOS 5</td>
+<td>320 x 480</td>
+<td>960 × 640</td>
+<td>3.5寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>第六代</td>
+<td>iPhone 5</td>
+<td>iOS 6</td>
+<td>320 x 568</td>
+<td>1136 x 640</td>
+<td>4.0寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>第七代</td>
+<td>iPhone 5S/5C</td>
+<td>iOS 7</td>
+<td>320 x 568</td>
+<td>1136 x 640</td>
+<td>4.0寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>第八代</td>
+<td>iPhone 6</td>
+<td>iOS 8</td>
+<td>375 x 667</td>
+<td>1334 x 750</td>
+<td>4.7寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>第八代</td>
+<td>iPhone 6 Plus</td>
+<td>iOS 8</td>
+<td>414 x 736</td>
+<td>2208 x 1242 (1920x1080)</td>
+<td>5.5寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>第九代</td>
+<td>iPhone 6S</td>
+<td>iOS 9</td>
+<td>375 x 667</td>
+<td>1334 x 750</td>
+<td>4.7寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>第九代</td>
+<td>iPhone 6S Plus</td>
+<td>iOS 9</td>
+<td>414 x 736</td>
+<td>2208 x 1242 (1920x1080)</td>
+<td>5.5寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>iPhone SE</td>
+<td>iOS 9</td>
+<td>320 x 568</td>
+<td>1136 x 640</td>
+<td>4寸</td>
+</tr>
+<tr>
+<td>第十代</td>
+<td>iPhone 7</td>
+<td>iOS 10</td>
+<td>375 x 667</td>
+<td>1334 x 750</td>
+<td>4.7寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>第十代</td>
+<td>iPhone 7 Plus</td>
+<td>iOS 10</td>
+<td>414 x 736</td>
+<td>2208 x 1242 (1920x1080)</td>
+<td>5.5寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>第十一代</td>
+<td>iPhone 8</td>
+<td>iOS 11</td>
+<td>375 x 667</td>
+<td>1334 x 750</td>
+<td>4.7寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>第十一代</td>
+<td>iPhone 8 Plus</td>
+<td>iOS 11</td>
+<td>414 x 736</td>
+<td>2208 x 1242 (1920x1080)</td>
+<td>5.5寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>第十一代</td>
+<td>iPhone X</td>
+<td>iOS 11</td>
+<td>375 x 812</td>
+<td>2436 × 1125</td>
+<td>5.8寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>第十二代</td>
+<td>Phone Xʀ</td>
+<td>iOS 12</td>
+<td>414 x 896</td>
+<td>1792 × 828</td>
+<td>6.1寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>第十二代</td>
+<td>iPhone Xs</td>
+<td>iOS 12</td>
+<td>375 x 812</td>
+<td>2436 × 1125</td>
+<td>5.8寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>第十二代</td>
+<td>iPhone Xs Max</td>
+<td>iOS 12</td>
+<td>414 x 896</td>
+<td>2688 × 1242</td>
+<td>6.5寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>第十三代</td>
+<td>iPhone 11</td>
+<td>iOS 13</td>
+<td>414 x 896</td>
+<td>1792 × 828</td>
+<td>6.1寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>第十三代</td>
+<td>iPhone 11 Pro</td>
+<td>iOS 13</td>
+<td>375 x 812</td>
+<td>2436 × 1125</td>
+<td>5.8寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>第十三代</td>
+<td>iPhone 11 Pro Max</td>
+<td>iOS 13</td>
+<td>414 x 896</td>
+<td>2688 × 1242</td>
+<td>6.5寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td>iPhone SE(二代)</td>
+<td>iOS 13</td>
+<td>375 x 667</td>
+<td>1334 x 750</td>
+<td>4.7寸</td>
+</tr>
+<tr>
+<td>第十四代</td>
+<td>iPhone 12 mini</td>
+<td>iOS 14</td>
+<td>375 x 812</td>
+<td>2340 × 1080</td>
+<td>5.4寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>第十四代</td>
+<td>iPhone 12</td>
+<td>iOS 14</td>
+<td>390 x 844</td>
+<td>2532 × 1170</td>
+<td>6.1寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>第十四代</td>
+<td>iPhone 12 Pro</td>
+<td>iOS 14</td>
+<td>390 x 844</td>
+<td>2532 × 1170</td>
+<td>6.1寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>第十四代</td>
+<td>iPhone 12 Pro Max</td>
+<td>iOS 14</td>
+<td>428 x 926</td>
+<td>2778 × 1284</td>
+<td>6.7寸</td>
+<td>3x</td>
+</tr>
+</tbody></table>
+<h5 id="develop-normal-info"><a href="#develop-normal-info" class="headerlink" title="develop normal info"></a>develop normal info</h5><table>
+<thead>
+<tr>
+<th>手机型号</th>
+<th>尺寸（对角线）</th>
+<th>物理点</th>
+<th>宽长比例</th>
+<th>像素点</th>
+<th>倍数</th>
+<th>状态栏高度</th>
+<th>底部安全距离</th>
+<th>导航栏高度</th>
+<th>tabbar高度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>iPhone 4/4S</td>
+<td>3.5英寸</td>
+<td>320x480</td>
+<td>0.667</td>
+<td>640x960</td>
+<td>@2x</td>
+<td>20</td>
+<td>-</td>
+<td>44</td>
+<td>49</td>
+</tr>
+<tr>
+<td>iPhone 5/5S/5C</td>
+<td>4英寸</td>
+<td>320x568</td>
+<td>0.563</td>
+<td>640x1136</td>
+<td>@2x</td>
+<td>20</td>
+<td>-</td>
+<td>44</td>
+<td>49</td>
+</tr>
+<tr>
+<td>iPhone SE</td>
+<td>4英寸</td>
+<td>320x568</td>
+<td>0.563</td>
+<td>640x1136</td>
+<td>@2x</td>
+<td>20</td>
+<td>-</td>
+<td>44</td>
+<td>49</td>
+</tr>
+<tr>
+<td>iPhone 6</td>
+<td>4.7英寸</td>
+<td>375x667</td>
+<td>0.562</td>
+<td>750x1334</td>
+<td>@2x</td>
+<td>20</td>
+<td>-</td>
+<td>44</td>
+<td>49</td>
+</tr>
+<tr>
+<td>iPhone 6 Plus</td>
+<td>5.5英寸</td>
+<td>414x736</td>
+<td>0.563</td>
+<td>1242x2208</td>
+<td>@3x</td>
+<td>20</td>
+<td>-</td>
+<td>44</td>
+<td>49</td>
+</tr>
+<tr>
+<td>iPhone 6S</td>
+<td>4.7英寸</td>
+<td>375x667</td>
+<td>0.562</td>
+<td>750x1334</td>
+<td>@2x</td>
+<td>20</td>
+<td>-</td>
+<td>44</td>
+<td>49</td>
+</tr>
+<tr>
+<td>iPhone 6S Plus</td>
+<td>5.5英寸</td>
+<td>414x736</td>
+<td>0.563</td>
+<td>1242x2208</td>
+<td>@3x</td>
+<td>20</td>
+<td>-</td>
+<td>44</td>
+<td>49</td>
+</tr>
+<tr>
+<td>iPhone 7</td>
+<td>4.7英寸</td>
+<td>375x667</td>
+<td>0.562</td>
+<td>750x1334</td>
+<td>@2x</td>
+<td>20</td>
+<td>-</td>
+<td>44</td>
+<td>49</td>
+</tr>
+<tr>
+<td>iPhone 7 Plus</td>
+<td>5.5英寸</td>
+<td>414x736</td>
+<td>0.563</td>
+<td>1242x2208</td>
+<td>@3x</td>
+<td>20</td>
+<td>-</td>
+<td>44</td>
+<td>49</td>
+</tr>
+<tr>
+<td>iPhone 8</td>
+<td>4.7英寸</td>
+<td>375x667</td>
+<td>0.562</td>
+<td>750x1334</td>
+<td>@2x</td>
+<td>20</td>
+<td>-</td>
+<td>44</td>
+<td>49</td>
+</tr>
+<tr>
+<td>iPhone 8 Plus</td>
+<td>5.5英寸</td>
+<td>414x736</td>
+<td>0.563</td>
+<td>1242x2208</td>
+<td>@3x</td>
+<td>20</td>
+<td>-</td>
+<td>44</td>
+<td>49</td>
+</tr>
+<tr>
+<td>iPhone X</td>
+<td>5.8英寸</td>
+<td>375x812</td>
+<td>0.462</td>
+<td>1125x2436</td>
+<td>@3x</td>
+<td>44</td>
+<td>34</td>
+<td>44</td>
+<td>83</td>
+</tr>
+<tr>
+<td>iPhone XS</td>
+<td>5.8英寸</td>
+<td>375x812</td>
+<td>0.462</td>
+<td>1125x2436</td>
+<td>@3x</td>
+<td>44</td>
+<td>34</td>
+<td>44</td>
+<td>83</td>
+</tr>
+<tr>
+<td>iPhone XS Max</td>
+<td>6.5英寸</td>
+<td>414x896</td>
+<td>0.462</td>
+<td>1242x2688</td>
+<td>@3x</td>
+<td>44</td>
+<td>34</td>
+<td>44</td>
+<td>83</td>
+</tr>
+<tr>
+<td>iPhone XR</td>
+<td>6.1英寸</td>
+<td>414x896</td>
+<td>0.462</td>
+<td>828x1792</td>
+<td>@2x</td>
+<td>44</td>
+<td>34</td>
+<td>44</td>
+<td>83</td>
+</tr>
+<tr>
+<td>iPhone 11</td>
+<td>6.1英寸</td>
+<td>414x896</td>
+<td>0.462</td>
+<td>828x1792</td>
+<td>@2x</td>
+<td>44</td>
+<td>34</td>
+<td>44</td>
+<td>83</td>
+</tr>
+<tr>
+<td>iPhone 11 Pro</td>
+<td>5.8英寸</td>
+<td>375x812</td>
+<td>0.462</td>
+<td>1125x2436</td>
+<td>@3x</td>
+<td>44</td>
+<td>34</td>
+<td>44</td>
+<td>83</td>
+</tr>
+<tr>
+<td>iPhone 11 Pro Max</td>
+<td>6.5英寸</td>
+<td>414x896</td>
+<td>0.462</td>
+<td>1242x2688</td>
+<td>@3x</td>
+<td>44</td>
+<td>34</td>
+<td>44</td>
+<td>83</td>
+</tr>
+</tbody></table>
+<h4 id="iPad"><a href="#iPad" class="headerlink" title="iPad"></a>iPad</h4><table>
+<thead>
+<tr>
+<th>设备</th>
+<th>操作系统</th>
+<th>物理分辨率(pixel)</th>
+<th>屏幕尺寸(对角线长度)</th>
+<th>缩放因子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>iPad 1</td>
+<td>iOS 3</td>
+<td>1024 x 768</td>
+<td>9.7寸</td>
+<td>1x</td>
+</tr>
+<tr>
+<td>iPad 2</td>
+<td>iOS 4</td>
+<td>1024 x 768</td>
+<td>9.7寸</td>
+<td>1x</td>
+</tr>
+<tr>
+<td>iPad 3 (The New iPad)</td>
+<td>iOS 5</td>
+<td>2048 x 1536</td>
+<td>9.7寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>iPad 4</td>
+<td>iOS 6</td>
+<td>2048 x 1536</td>
+<td>9.7寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>iPad Air</td>
+<td>iOS 7</td>
+<td>2048 x 1536</td>
+<td>9.7寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>iPad Air 2</td>
+<td>iOS 8</td>
+<td>2048 x 1536</td>
+<td>9.7寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>iPad Pro</td>
+<td>iOS 9</td>
+<td>2048 x 1536</td>
+<td>9.7寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>iPad (第五代)</td>
+<td>iOS 10</td>
+<td>2048 x 1536</td>
+<td>9.7寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>iPad (第六代)</td>
+<td>iOS 12</td>
+<td>2048 x 1536</td>
+<td>9.7寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>iPad (第七代)</td>
+<td>iOS 13</td>
+<td>2160 x 1620</td>
+<td>10.2寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>iPad (第八代)</td>
+<td>iOS 14</td>
+<td>2160 x 1620</td>
+<td>10.2寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>iPad Pro</td>
+<td>iOS 9</td>
+<td>2732 x 2048</td>
+<td>12.9寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>iPad Pro (取代9.7寸)</td>
+<td>iOS 10</td>
+<td>2224 x 1668</td>
+<td>10.5寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>iPad Pro (第二代)</td>
+<td>iOS 12</td>
+<td>2732 x 2048</td>
+<td>12.9寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>iPad Pro (第三代)</td>
+<td>iOS 12</td>
+<td>2388 x 1668</td>
+<td>11寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>iPad Pro (第三代)</td>
+<td>iOS 12</td>
+<td>2732 x 2048</td>
+<td>12.9寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>iPad Pro (第四代)</td>
+<td>iOS 13</td>
+<td>2388 x 1668</td>
+<td>11寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>iPad Pro (第四代)</td>
+<td>iOS 13</td>
+<td>2732 x 2048</td>
+<td>12.9寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>iPad Air 3</td>
+<td>iOS 12</td>
+<td>2224x1668</td>
+<td>10.5寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>iPad Air 4</td>
+<td>iOS 14</td>
+<td>2360x1649</td>
+<td>10.9寸</td>
+<td>3x</td>
+</tr>
+<tr>
+<td>iPad mini</td>
+<td>iOS 6</td>
+<td>1024 x 768</td>
+<td>7.9寸</td>
+<td>1x</td>
+</tr>
+<tr>
+<td>iPad mini 2</td>
+<td>iOS 7</td>
+<td>2048 x 1536</td>
+<td>7.9寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>iPad mini 3</td>
+<td>iOS 8</td>
+<td>2048 x 1536</td>
+<td>7.9寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>iPad mini 4</td>
+<td>iOS 9</td>
+<td>2048 x 1536</td>
+<td>7.9寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>iPad mini 5</td>
+<td>iOS 12</td>
+<td>2048 x 1536</td>
+<td>7.9寸</td>
+<td>2x</td>
+</tr>
+</tbody></table>
+<h4 id="iPod"><a href="#iPod" class="headerlink" title="iPod"></a>iPod</h4><table>
+<thead>
+<tr>
+<th>设备</th>
+<th>操作系统</th>
+<th>物理分辨率(pixel)</th>
+<th>屏幕尺寸(对角线长度)</th>
+<th>缩放因子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>iPod Touch 1</td>
+<td>iOS 1</td>
+<td>480 x 320</td>
+<td>3.5寸</td>
+<td>1x</td>
+</tr>
+<tr>
+<td>iPod Touch 2</td>
+<td>iOS 2</td>
+<td>480 x 320</td>
+<td>3.5寸</td>
+<td>1x</td>
+</tr>
+<tr>
+<td>iPod Touch 3</td>
+<td>iOS 3</td>
+<td>480 x 320</td>
+<td>3.5寸</td>
+<td>1x</td>
+</tr>
+<tr>
+<td>iPod Touch 4</td>
+<td>iOS 4</td>
+<td>960 x 640</td>
+<td>3.5寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>iPod Touch 5</td>
+<td>iOS 6</td>
+<td>1136 x 640</td>
+<td>4.0寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>iPod Touch 6</td>
+<td>iOS 8</td>
+<td>1136 x 640</td>
+<td>4.0寸</td>
+<td>2x</td>
+</tr>
+<tr>
+<td>iPod Touch 7</td>
+<td>iOS 12</td>
+<td>1136 x 640</td>
+<td>4.0寸</td>
+<td>2x</td>
+</tr>
+</tbody></table>
+<p>参考链接：<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/a18339063397/article/details/81482073">https://blog.csdn.net/a18339063397/article/details/81482073</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/Scorpio_27/article/details/52297643">https://blog.csdn.net/Scorpio_27/article/details/52297643</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/09/10/symbol/" rel="prev" title="symbol">
+      <i class="fa fa-chevron-left"></i> symbol
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/05/10/async%E3%80%81await%E5%8E%9F%E7%90%86/" rel="next" title="async/await原理">
+      async/await原理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#iOS-%E8%AE%BE%E5%A4%87%E5%BC%80%E5%8F%91%E5%B1%8F%E5%B9%95%E5%88%86%E8%BE%A8%E7%8E%87%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">iOS 设备开发屏幕分辨率信息</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#iPhone"><span class="nav-number">1.1.</span> <span class="nav-text">iPhone</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#develop-normal-info"><span class="nav-number">1.1.1.</span> <span class="nav-text">develop normal info</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iPad"><span class="nav-number">1.2.</span> <span class="nav-text">iPad</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iPod"><span class="nav-number">1.3.</span> <span class="nav-text">iPod</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="forward"
+      src="/images/dancer.jpg">
+  <p class="site-author-name" itemprop="name">forward</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">forward</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+    <script src="/js/clickLove.js" async="async"></script>
+    <script src="/js/mouseNest.js" async="async"></script>
+</body>
+</html>

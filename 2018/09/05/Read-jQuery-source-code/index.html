@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-dancer.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-dancer.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"subrlse.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="jQuery 整体架构 jQuery 闭包结构123(function(window, undefined)&amp;#123;    &#x2F;&#x2F; jQuery code&amp;#125;)(window)  jQuery 具体的实现，都被包含在了一个立即执行函数构造的闭包里面，为了不污染全局作用域，最终只暴露 $ 和 jQuery 两个变量给外界，尽量避开变量冲突。 jQuery 无 new 构造通常，实例化一个j">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Read: jQuery source code">
+<meta property="og:url" content="http://subrlse.github.io/2018/09/05/Read-jQuery-source-code/index.html">
+<meta property="og:site_name" content="CoF">
+<meta property="og:description" content="jQuery 整体架构 jQuery 闭包结构123(function(window, undefined)&amp;#123;    &#x2F;&#x2F; jQuery code&amp;#125;)(window)  jQuery 具体的实现，都被包含在了一个立即执行函数构造的闭包里面，为了不污染全局作用域，最终只暴露 $ 和 jQuery 两个变量给外界，尽量避开变量冲突。 jQuery 无 new 构造通常，实例化一个j">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://subrlse.github.io/images/jquery_structure.png">
+<meta property="og:image" content="http://subrlse.github.io/images/prevObject.jpg">
+<meta property="og:image" content="http://subrlse.github.io/images/noconflict.jpg">
+<meta property="article:published_time" content="2018-09-05T09:14:19.000Z">
+<meta property="article:modified_time" content="2021-07-30T07:46:19.890Z">
+<meta property="article:author" content="forward">
+<meta property="article:tag" content="js">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://subrlse.github.io/images/jquery_structure.png">
+
+<link rel="canonical" href="http://subrlse.github.io/2018/09/05/Read-jQuery-source-code/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Read: jQuery source code | CoF</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">CoF</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Something just like this</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://subrlse.github.io/2018/09/05/Read-jQuery-source-code/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/dancer.jpg">
+      <meta itemprop="name" content="forward">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoF">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Read: jQuery source code
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-09-05 17:14:19" itemprop="dateCreated datePublished" datetime="2018-09-05T17:14:19+08:00">2018-09-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-07-30 15:46:19" itemprop="dateModified" datetime="2021-07-30T15:46:19+08:00">2021-07-30</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="jQuery-整体架构"><a href="#jQuery-整体架构" class="headerlink" title="jQuery 整体架构"></a>jQuery 整体架构</h3><p><img src="/images/jquery_structure.png" alt="structure"></p>
+<h3 id="jQuery-闭包结构"><a href="#jQuery-闭包结构" class="headerlink" title="jQuery 闭包结构"></a>jQuery 闭包结构</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"><span class="built_in">window</span>, <span class="literal">undefined</span></span>)</span>&#123;</span><br><span class="line">    <span class="comment">// jQuery code</span></span><br><span class="line">&#125;)(<span class="built_in">window</span>)</span><br></pre></td></tr></table></figure>
+
+<p>jQuery 具体的实现，都被包含在了一个立即执行函数构造的闭包里面，为了不污染全局作用域，最终只暴露 $ 和 jQuery 两个变量给外界，尽量避开变量冲突。</p>
+<h3 id="jQuery-无-new-构造"><a href="#jQuery-无-new-构造" class="headerlink" title="jQuery 无 new 构造"></a>jQuery 无 new 构造</h3><p>通常，实例化一个jQuery对象的方法:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 无 new 构造</span></span><br><span class="line">$(<span class="string">&#x27;div&#x27;</span>).text(<span class="string">&#x27;hello&#x27;</span>);</span><br><span class="line"><span class="comment">// 使用 new </span></span><br><span class="line"><span class="keyword">var</span> div = <span class="keyword">new</span> $(<span class="string">&#x27;div&#x27;</span>);</span><br><span class="line">div.text(<span class="string">&#x27;hello&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<p>无new构造，其本质相当于new jQuery()，其内部实现:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"><span class="built_in">window</span>, <span class="literal">undefined</span></span>) </span>&#123;</span><br><span class="line">     <span class="keyword">var</span></span><br><span class="line">     <span class="comment">// ...</span></span><br><span class="line">     jQuery = <span class="function"><span class="keyword">function</span>(<span class="params">selector, context</span>) </span>&#123;</span><br><span class="line">         <span class="comment">// The jQuery object is actually just the init constructor &#x27;enhanced&#x27;</span></span><br><span class="line">         <span class="comment">// 看这里，实例化方法 jQuery() 实际上是调用了其拓展的原型方法 jQuery.fn.init</span></span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">new</span> jQuery.fn.init(selector, context, rootjQuery);</span><br><span class="line">     &#125;,</span><br><span class="line">     <span class="comment">// jQuery.prototype 即是 jQuery 的原型，挂载在上面的方法，即可让所有生成的 jQuery 对象使用</span></span><br><span class="line">     jQuery.fn = jQuery.prototype = &#123;</span><br><span class="line">         <span class="comment">// 实例化化方法，这个方法可以称作 jQuery 对象构造器</span></span><br><span class="line">         <span class="attr">init</span>: <span class="function"><span class="keyword">function</span>(<span class="params">selector, context, rootjQuery</span>) </span>&#123;</span><br><span class="line">             <span class="comment">// ...</span></span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line"> </span><br><span class="line">     <span class="comment">// 这一句很关键，也很绕</span></span><br><span class="line">     <span class="comment">// jQuery 没有使用 new 运算符将 jQuery 实例化，而是直接调用其函数</span></span><br><span class="line">     <span class="comment">// 要实现这样,那么 jQuery 就要看成一个类，且返回一个正确的实例</span></span><br><span class="line">     <span class="comment">// 且实例还要能正确访问 jQuery 类原型上的属性与方法</span></span><br><span class="line">     <span class="comment">// jQuery 的方式是通过原型传递解决问题，把 jQuery 的原型传递给jQuery.prototype.init.prototype</span></span><br><span class="line">     <span class="comment">// 所以通过这个方法生成的实例 this 所指向的仍然是 jQuery.fn，所以能正确访问 jQuery 类原型上的属性与方法</span></span><br><span class="line">     jQuery.fn.init.prototype = jQuery.fn;</span><br><span class="line"> &#125;)(<span class="built_in">window</span>)</span><br></pre></td></tr></table></figure>
+<p>jQuery.fn.init.prototype = jQuery.fn; 这一句是jQuery的绝妙之处</p>
+<p>1）首先要明确，使用 $(‘xxx’) 这种实例化方式，其内部调用的是 return new jQuery.fn.init(selector, context, rootjQuery) 这一句话，也就是构造实例是交给了 jQuery.fn.init() 方法去完成。</p>
+<p>2）将 jQuery.fn.init 的 prototype 属性设置为 jQuery.fn，那么使用 new jQuery.fn.init() 生成的对象的原型对象就是 jQuery.fn ，所以挂载到 jQuery.fn 上面的函数就相当于挂载到 jQuery.fn.init() 生成的 jQuery 对象上，所有使用 new jQuery.fn.init() 生成的对象也能够访问到 jQuery.fn 上的所有原型方法。</p>
+<p>3）也就是实例化方法存在这么一个关系链<br>    - jQuery.fn.init.prototype = jQuery.fn = jQuery.prototype;<br>    - new jQuery.fn.init() 相当于 new jQuery();<br>    - jQuery() 返回的是 new jQuery.fn.init()，而 var obj = new jQuery()，所以这 2 者是相当的，所以我们可以无 new 实例化 jQuery 对象。</p>
+<h3 id="jQuery-方法的重载"><a href="#jQuery-方法的重载" class="headerlink" title="jQuery 方法的重载"></a>jQuery 方法的重载</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取 title 属性的值</span></span><br><span class="line">$(<span class="string">&#x27;#id&#x27;</span>).attr(<span class="string">&#x27;title&#x27;</span>);</span><br><span class="line"><span class="comment">// 设置 title 属性的值</span></span><br><span class="line">$(<span class="string">&#x27;#id&#x27;</span>).attr(<span class="string">&#x27;title&#x27;</span>,<span class="string">&#x27;jQuery&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取 css 某个属性的值</span></span><br><span class="line">$(<span class="string">&#x27;#id&#x27;</span>).css(<span class="string">&#x27;title&#x27;</span>);</span><br><span class="line"><span class="comment">// 设置 css 某个属性的值</span></span><br><span class="line">$(<span class="string">&#x27;#id&#x27;</span>).css(<span class="string">&#x27;width&#x27;</span>,<span class="string">&#x27;200px&#x27;</span>);</span><br></pre></td></tr></table></figure>
+<p>方法的重载即是一个方法实现多种功能，经常又是 get 又是 set，虽然阅读起来十分不易，但是从实用性的角度考虑，这也是为什么 jQuery 如此受欢迎的原因，大多数人使用 jQuery() 构造方法使用的最多的就是直接实例化一个 jQuery 对象，但其实在它的内部实现中，有着 9 种不同的方法重载场景:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 接受一个字符串，其中包含了用于匹配元素集合的 CSS 选择器</span></span><br><span class="line">jQuery([selector,[context]])</span><br><span class="line"><span class="comment">// 传入单个 DOM</span></span><br><span class="line">jQuery(element)</span><br><span class="line"><span class="comment">// 传入 DOM 数组</span></span><br><span class="line">jQuery(elementArray)</span><br><span class="line"><span class="comment">// 传入 JS 对象</span></span><br><span class="line">jQuery(object)</span><br><span class="line"><span class="comment">// 传入 jQuery 对象</span></span><br><span class="line">jQuery(jQuery object)</span><br><span class="line"><span class="comment">// 传入原始 HTML 的字符串来创建 DOM 元素</span></span><br><span class="line">jQuery(html,[ownerDocument])</span><br><span class="line">jQuery(html,[attributes])</span><br><span class="line"><span class="comment">// 传入空参数</span></span><br><span class="line">jQuery()</span><br><span class="line"><span class="comment">// 绑定一个在 DOM 文档载入完成后执行的函数</span></span><br><span class="line">jQuery(callback)</span><br></pre></td></tr></table></figure>
+<p>所以读源码的时候，很重要的一点是结合 jQuery API 进行阅读，去了解方法重载了多少种功能，同时我想说的是，jQuery 源码有些方法的实现特别长且繁琐，因为 jQuery 本身作为一个通用性特别强的框架，一个方法兼容了许多情况，也允许用户传入各种不同的参数，导致内部处理的逻辑十分复杂，所以当解读一个方法的时候感觉到了明显的困难，尝试着跳出卡壳的那段代码本身，站在更高的维度去思考这些复杂的逻辑是为了处理或兼容什么，是否是重载，为什么要这样写，一定会有不一样的收获。其次，也是因为这个原因，jQuery 源码存在许多兼容低版本的 HACK 或者逻辑十分晦涩繁琐的代码片段，浏览器兼容这样的大坑极其容易让一个前端工程师不能学到编程的精髓，所以不要太执着于一些边角料，即使兼容性很重要，也应该适度学习理解，适可而止。</p>
+<h3 id="jQuery-fn-extend-与-jQuery-extend"><a href="#jQuery-fn-extend-与-jQuery-extend" class="headerlink" title="jQuery.fn.extend 与 jQuery.extend"></a>jQuery.fn.extend 与 jQuery.extend</h3><p>extend 方法在jQuery中一直是一个很重要的方法，jQuery 内部用它来扩展静态方法或实例方法，而且我们开发 jQuery 插件开发的时候也会用到它。但是在内部，是存在 jQuery.fn.extend 和 jQuery.extend 两个 extend 方法的，而区分这两个 extend 方法是理解 jQuery 的很关键的一部分。先看结论:<br>    - jQuery.extend(object) 为扩展 jQuery 类本身，为类添加新的静态方法;<br>    - jQuery.fn.extend(object) 给 jQuery 对象添加实例方法，也就是通过这个 extend 添加的新方法，实例化的 jQuery 对象都能使用，<br>      因为它是挂载在 jQuery.fn 上的方法（上文有提到，jQuery.fn = jQuery.prototype ）<br>它们的官方解释是:<br>1）jQuery.extend(): 把两个或者更多的对象合并到第一个当中，<br>2）jQuery.fn.extend()：把对象挂载到 jQuery 的 prototype 属性，来扩展一个新的 jQuery 实例方法。<br>也就是说，使用 jQuery.extend() 拓展的静态方法，我们可以直接使用 $.xxx 进行调用（xxx是拓展的方法名），<br>而使用 jQuery.fn.extend() 拓展的实例方法，需要使用 $().xxx 调用。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 扩展合并函数</span></span><br><span class="line"><span class="comment">// 合并两个或更多对象的属性到第一个对象中，jQuery 后续的大部分功能都通过该函数扩展</span></span><br><span class="line"><span class="comment">// 虽然实现方式一样，但是要注意区分用法的不一样，那么为什么两个方法指向同一个函数实现，但是却实现不同的功能呢,</span></span><br><span class="line"><span class="comment">// 阅读源码就能发现这归功于 this 的强大力量</span></span><br><span class="line"><span class="comment">// 如果传入两个或多个对象，所有对象的属性会被添加到第一个对象 target</span></span><br><span class="line"><span class="comment">// 如果只传入一个对象，则将对象的属性添加到 jQuery 对象中，也就是添加静态方法</span></span><br><span class="line"><span class="comment">// 用这种方式，我们可以为 jQuery 命名空间增加新的方法，可以用于编写 jQuery 插件</span></span><br><span class="line"><span class="comment">// 如果不想改变传入的对象，可以传入一个空对象：$.extend(&#123;&#125;, object1, object2);</span></span><br><span class="line"><span class="comment">// 默认合并操作是不迭代的，即便 target 的某个属性是对象或属性，也会被完全覆盖而不是合并</span></span><br><span class="line"><span class="comment">// 如果第一个参数是 true，则是深拷贝</span></span><br><span class="line"><span class="comment">// 从 object 原型继承的属性会被拷贝，值为 undefined 的属性不会被拷贝</span></span><br><span class="line"><span class="comment">// 因为性能原因，JavaScript 自带类型的属性不会合并</span></span><br><span class="line">jQuery.extend = jQuery.fn.extend = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> src, copyIsArray, copy, name, options, clone,</span><br><span class="line">        target = <span class="built_in">arguments</span>[<span class="number">0</span>] || &#123;&#125;,</span><br><span class="line">        i = <span class="number">1</span>,</span><br><span class="line">        length = <span class="built_in">arguments</span>.length,</span><br><span class="line">        deep = <span class="literal">false</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Handle a deep copy situation</span></span><br><span class="line">    <span class="comment">// target 是传入的第一个参数</span></span><br><span class="line">    <span class="comment">// 如果第一个参数是布尔类型，则表示是否要深递归，</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> target === <span class="string">&quot;boolean&quot;</span>) &#123;</span><br><span class="line">        deep = target;</span><br><span class="line">        target = <span class="built_in">arguments</span>[<span class="number">1</span>] || &#123;&#125;;</span><br><span class="line">        <span class="comment">// skip the boolean and the target</span></span><br><span class="line">        <span class="comment">// 如果传了类型为 boolean 的第一个参数，i 则从 2 开始</span></span><br><span class="line">        i = <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Handle case when target is a string or something (possible in deep copy)</span></span><br><span class="line">    <span class="comment">// 如果传入的第一个参数是 字符串或者其他</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> target !== <span class="string">&quot;object&quot;</span> &amp;&amp; !jQuery.isFunction(target)) &#123;</span><br><span class="line">        target = &#123;&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// extend jQuery itself if only one argument is passed</span></span><br><span class="line">    <span class="comment">// 如果参数的长度为 1 ，表示是 jQuery 静态方法</span></span><br><span class="line">    <span class="keyword">if</span> (length === i) &#123;</span><br><span class="line">        target = <span class="built_in">this</span>;</span><br><span class="line">        --i;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 可以传入多个复制源</span></span><br><span class="line">    <span class="comment">// i 是从 1或2 开始的</span></span><br><span class="line">    <span class="keyword">for</span> (; i &lt; length; i++) &#123;</span><br><span class="line">        <span class="comment">// Only deal with non-null/undefined values</span></span><br><span class="line">        <span class="comment">// 将每个源的属性全部复制到 target 上</span></span><br><span class="line">        <span class="keyword">if</span> ((options = <span class="built_in">arguments</span>[i]) != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// Extend the base object</span></span><br><span class="line">            <span class="keyword">for</span> (name <span class="keyword">in</span> options) &#123;</span><br><span class="line">                <span class="comment">// src 是源（即本身）的值</span></span><br><span class="line">                <span class="comment">// copy 是即将要复制过去的值</span></span><br><span class="line">                src = target[name];</span><br><span class="line">                copy = options[name];</span><br><span class="line"></span><br><span class="line">                <span class="comment">// Prevent never-ending loop</span></span><br><span class="line">                <span class="comment">// 防止有环，例如 extend(true, target, &#123;&#x27;target&#x27;:target&#125;);</span></span><br><span class="line">                <span class="keyword">if</span> (target === copy) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">// Recurse if we&#x27;re merging plain objects or arrays</span></span><br><span class="line">                <span class="comment">// 这里是递归调用，最终都会到下面的 else if 分支</span></span><br><span class="line">                <span class="comment">// jQuery.isPlainObject 用于测试是否为纯粹的对象</span></span><br><span class="line">                <span class="comment">// 纯粹的对象指的是 通过 &quot;&#123;&#125;&quot; 或者 &quot;new Object&quot; 创建的</span></span><br><span class="line">                <span class="comment">// 如果是深复制</span></span><br><span class="line">                <span class="keyword">if</span> (deep &amp;&amp; copy &amp;&amp; (jQuery.isPlainObject(copy) || (copyIsArray = jQuery.isArray(copy)))) &#123;</span><br><span class="line">                    <span class="comment">// 数组</span></span><br><span class="line">                    <span class="keyword">if</span> (copyIsArray) &#123;</span><br><span class="line">                        copyIsArray = <span class="literal">false</span>;</span><br><span class="line">                        clone = src &amp;&amp; jQuery.isArray(src) ? src : [];</span><br><span class="line"></span><br><span class="line">                        <span class="comment">// 对象</span></span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        clone = src &amp;&amp; jQuery.isPlainObject(src) ? src : &#123;&#125;;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// Never move original objects, clone them</span></span><br><span class="line">                    <span class="comment">// 递归</span></span><br><span class="line">                    target[name] = jQuery.extend(deep, clone, copy);</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// Don&#x27;t bring in undefined values</span></span><br><span class="line">                    <span class="comment">// 最终都会到这条分支</span></span><br><span class="line">                    <span class="comment">// 简单的值覆盖</span></span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (copy !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">                    target[name] = copy;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Return the modified object</span></span><br><span class="line">    <span class="comment">// 返回新的 target</span></span><br><span class="line">    <span class="comment">// 如果 i &lt; length ，是直接返回没经过处理的 target，也就是 arguments[0]</span></span><br><span class="line">    <span class="comment">// 也就是如果不传需要覆盖的源，调用 $.extend 其实是增加 jQuery 的静态方法</span></span><br><span class="line">    <span class="keyword">return</span> target;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>需要注意的是这一句 jQuery.extend = jQuery.fn.extend = function() {} ，也就是 jQuery.extend 的实现和 jQuery.fn.extend 的实现共用了同一个方法，但是为什么能够实现不同的功能了，这就要归功于 Javascript 强大（怪异？）的 this 了。<br>1）在 jQuery.extend() 中，this 的指向是 jQuery 对象(或者说是 jQuery 类)，所以这里扩展在 jQuery 上；<br>2）在 jQuery.fn.extend() 中，this 的指向是 fn 对象，前面有提到 jQuery.fn = jQuery.prototype ，也就是这里增加的是原型方法，也就是对象方法。</p>
+<h3 id="jQuery-的链式调用及回溯"><a href="#jQuery-的链式调用及回溯" class="headerlink" title="jQuery 的链式调用及回溯"></a>jQuery 的链式调用及回溯</h3><p>另一个让大家喜爱使用 jQuery 的原因是它的链式调用，这一点的实现其实很简单，只需要在要实现链式调用的方法的返回结果里，返回 this ，就能够实现链式调用了。</p>
+<p>当然，除了链式调用，jQuery 甚至还允许回溯，看看:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 通过 end() 方法终止在当前链的最新过滤操作，返回上一个对象集合</span></span><br><span class="line">$(<span class="string">&#x27;div&#x27;</span>).eq(<span class="number">0</span>).show().end().eq(<span class="number">1</span>).hide();</span><br></pre></td></tr></table></figure>
+<p>当选择了 (‘div’).eq(0) 之后使用 end() 可以回溯到上一步选中的 jQuery 对象 $(‘div’)，其内部实现其实是依靠添加了 prevObject 这个属性<br><img src="/images/prevObject.jpg" alt="prevObject"><br>jQuery 完整的链式调用、增栈、回溯通过 return this 、 return this.pushStack() 、return this.prevObject 实现，看看源码实现:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">jQuery.fn = jQuery.prototype = &#123;</span><br><span class="line">    <span class="comment">// 将一个 DOM 元素集合加入到 jQuery 栈</span></span><br><span class="line">    <span class="comment">// 此方法在 jQuery 的 DOM 操作中被频繁的使用, 如在 parent(), find(), filter() 中</span></span><br><span class="line">    <span class="comment">// pushStack() 方法通过改变一个 jQuery 对象的 prevObject 属性来跟踪链式调用中前一个方法返回的 DOM 结果集合</span></span><br><span class="line">    <span class="comment">// 当我们在链式调用 end() 方法后, 内部就返回当前 jQuery 对象的 prevObject 属性</span></span><br><span class="line">    <span class="attr">pushStack</span>: <span class="function"><span class="keyword">function</span>(<span class="params">elems</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// 构建一个新的jQuery对象，无参的 this.constructor()，只是返回引用this</span></span><br><span class="line">        <span class="comment">// jQuery.merge 把 elems 节点合并到新的 jQuery 对象</span></span><br><span class="line">        <span class="comment">// this.constructor 就是 jQuery 的构造函数 jQuery.fn.init，所以 this.constructor() 返回一个 jQuery 对象</span></span><br><span class="line">        <span class="comment">// 由于 jQuery.merge 函数返回的对象是第二个函数附加到第一个上面，所以 ret 也是一个 jQuery 对象，这里可以解释为什么 pushStack 出入的 DOM 对象也可以用 CSS 方法进行操作</span></span><br><span class="line">        <span class="keyword">var</span> ret = jQuery.merge(<span class="built_in">this</span>.constructor(), elems);</span><br><span class="line"> </span><br><span class="line">        <span class="comment">// 给返回的新 jQuery 对象添加属性 prevObject</span></span><br><span class="line">        <span class="comment">// 所以也就是为什么通过 prevObject 能取到上一个合集的引用了</span></span><br><span class="line">        ret.prevObject = <span class="built_in">this</span>;</span><br><span class="line">        ret.context = <span class="built_in">this</span>.context;</span><br><span class="line"> </span><br><span class="line">        <span class="comment">// Return the newly-formed element set</span></span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 回溯链式调用的上一个对象</span></span><br><span class="line">    <span class="attr">end</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="comment">// 回溯的关键是返回 prevObject 属性</span></span><br><span class="line">        <span class="comment">// 而 prevObject 属性保存了上一步操作的 jQuery 对象集合</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.prevObject || <span class="built_in">this</span>.constructor(<span class="literal">null</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="comment">// 取当前 jQuery 对象的第 i 个</span></span><br><span class="line">    <span class="attr">eq</span>: <span class="function"><span class="keyword">function</span>(<span class="params">i</span>) </span>&#123;</span><br><span class="line">        <span class="comment">// jQuery 对象集合的长度</span></span><br><span class="line">        <span class="keyword">var</span> len = <span class="built_in">this</span>.length,</span><br><span class="line">            j = +i + (i &lt; <span class="number">0</span> ? len : <span class="number">0</span>);</span><br><span class="line"> </span><br><span class="line">        <span class="comment">// 利用 pushStack 返回</span></span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.pushStack(j &gt;= <span class="number">0</span> &amp;&amp; j &lt; len ? [<span class="built_in">this</span>[j]] : []);</span><br><span class="line">    &#125;, </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>总的来说，<br>1）end() 方法返回 prevObject 属性，这个属性记录了上一步操作的 jQuery 对象合集；<br>2）而 prevObject 属性由 pushStack() 方法生成，该方法将一个 DOM 元素集合加入到 jQuery 内部管理的一个栈中，通过改变 jQuery 对象的 prevObject 属性来跟踪链式调用中前一个方法返回的 DOM 结果集合<br>3）当我们在链式调用 end() 方法后，内部就返回当前 jQuery 对象的 prevObject 属性，完成回溯。</p>
+<h3 id="jQuery-正则与细节优化"><a href="#jQuery-正则与细节优化" class="headerlink" title="jQuery 正则与细节优化"></a>jQuery 正则与细节优化</h3><p>不得不提 jQuery 在细节优化上做的很好。也存在很多值得学习的小技巧，下一篇将会以 jQuery 中的一些编程技巧为主题行文，这里就不再赘述。</p>
+<p>然后想谈谈正则表达式，jQuery 当中用了大量的正则表达式，我觉得如果研读 jQuery ，正则水平一定能够大大提升，如果是个正则小白，我建议在阅读之前先去了解以下几点：</p>
+<p>1）了解并尝试使用 Javascript 正则相关 API，包括了 test() 、replace() 、match() 、exec() 的用法；</p>
+<p>2）区分上面 4 个方法，哪个是 RegExp 对象方法，哪个是 String 对象方法；</p>
+<p>3）了解简单的零宽断言，了解什么是匹配但是不捕获以及匹配并且捕获。</p>
+<h3 id="jQuery-变量冲突处理"><a href="#jQuery-变量冲突处理" class="headerlink" title="jQuery 变量冲突处理"></a>jQuery 变量冲突处理</h3><p>最后想提一提 jQuery 变量的冲突处理，通过一开始保存全局变量的 window.jQuery 以及 windw.$ 。<br>当需要处理冲突的时候，调用静态方法 noConflict()，让出变量的控制权，源码如下:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"><span class="built_in">window</span>, <span class="literal">undefined</span></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span></span><br><span class="line">        <span class="comment">// Map over jQuery in case of overwrite</span></span><br><span class="line">        <span class="comment">// 设置别名，通过两个私有变量映射了 window 环境下的 jQuery 和 $ 两个对象，以防止变量被强行覆盖</span></span><br><span class="line">        _jQuery = <span class="built_in">window</span>.jQuery,</span><br><span class="line">        _$ = <span class="built_in">window</span>.$;</span><br><span class="line"> </span><br><span class="line">    jQuery.extend(&#123;</span><br><span class="line">        <span class="comment">// noConflict() 方法让出变量 $ 的 jQuery 控制权，这样其他脚本就可以使用它了</span></span><br><span class="line">        <span class="comment">// 通过全名替代简写的方式来使用 jQuery</span></span><br><span class="line">        <span class="comment">// deep -- 布尔值，指示是否允许彻底将 jQuery 变量还原(移交 $ 引用的同时是否移交 jQuery 对象本身)</span></span><br><span class="line">        <span class="attr">noConflict</span>: <span class="function"><span class="keyword">function</span>(<span class="params">deep</span>) </span>&#123;</span><br><span class="line">            <span class="comment">// 判断全局 $ 变量是否等于 jQuery 变量</span></span><br><span class="line">            <span class="comment">// 如果等于，则重新还原全局变量 $ 为 jQuery 运行之前的变量（存储在内部变量 _$ 中）</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">window</span>.$ === jQuery) &#123;</span><br><span class="line">                <span class="comment">// 此时 jQuery 别名 $ 失效</span></span><br><span class="line">                <span class="built_in">window</span>.$ = _$;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 当开启深度冲突处理并且全局变量 jQuery 等于内部 jQuery，则把全局 jQuery 还原成之前的状况</span></span><br><span class="line">            <span class="keyword">if</span> (deep &amp;&amp; <span class="built_in">window</span>.jQuery === jQuery) &#123;</span><br><span class="line">                <span class="comment">// 如果 deep 为 true，此时 jQuery 失效</span></span><br><span class="line">                <span class="built_in">window</span>.jQuery = _jQuery;</span><br><span class="line">            &#125;</span><br><span class="line"> </span><br><span class="line">            <span class="comment">// 这里返回的是 jQuery 库内部的 jQuery 构造函数（new jQuery.fn.init()）</span></span><br><span class="line">            <span class="comment">// 像使用 $ 一样尽情使用它吧</span></span><br><span class="line">            <span class="keyword">return</span> jQuery;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;(<span class="built_in">window</span>)</span><br></pre></td></tr></table></figure>
+<p>画了一幅简单的流程图帮助理解:<br><img src="/images/noconflict.jpg" alt="变量冲突"><br>那么让出了这两个符号之后，是否就不能在我们的代码中使用 jQuery 或者呢 $ 呢？莫慌，还是可以使用的:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 让出 jQuery 、$ 的控制权不代表不能使用 jQuery 和 $ ，方法如下：</span></span><br><span class="line"><span class="keyword">var</span> query = jQuery.noConflict(<span class="literal">true</span>);</span><br><span class="line"> </span><br><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params">$</span>) </span>&#123;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 插件或其他形式的代码，也可以将参数设为 jQuery</span></span><br><span class="line">&#125;)(query);</span><br><span class="line"> </span><br><span class="line"><span class="comment">//  ... 其他用 $ 作为别名的库的代码</span></span><br></pre></td></tr></table></figure>
+
+<p>原文出自<a target="_blank" rel="noopener" href="https://www.cnblogs.com/coco1s/p/5261646.html">ChokCoco</a></p>
+<span id="more"></span>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/js/" rel="tag"># js</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/09/05/throttle/" rel="prev" title="节流">
+      <i class="fa fa-chevron-left"></i> 节流
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/09/10/symbol/" rel="next" title="symbol">
+      symbol <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#jQuery-%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84"><span class="nav-number">1.</span> <span class="nav-text">jQuery 整体架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jQuery-%E9%97%AD%E5%8C%85%E7%BB%93%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">jQuery 闭包结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jQuery-%E6%97%A0-new-%E6%9E%84%E9%80%A0"><span class="nav-number">3.</span> <span class="nav-text">jQuery 无 new 构造</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jQuery-%E6%96%B9%E6%B3%95%E7%9A%84%E9%87%8D%E8%BD%BD"><span class="nav-number">4.</span> <span class="nav-text">jQuery 方法的重载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jQuery-fn-extend-%E4%B8%8E-jQuery-extend"><span class="nav-number">5.</span> <span class="nav-text">jQuery.fn.extend 与 jQuery.extend</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jQuery-%E7%9A%84%E9%93%BE%E5%BC%8F%E8%B0%83%E7%94%A8%E5%8F%8A%E5%9B%9E%E6%BA%AF"><span class="nav-number">6.</span> <span class="nav-text">jQuery 的链式调用及回溯</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jQuery-%E6%AD%A3%E5%88%99%E4%B8%8E%E7%BB%86%E8%8A%82%E4%BC%98%E5%8C%96"><span class="nav-number">7.</span> <span class="nav-text">jQuery 正则与细节优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#jQuery-%E5%8F%98%E9%87%8F%E5%86%B2%E7%AA%81%E5%A4%84%E7%90%86"><span class="nav-number">8.</span> <span class="nav-text">jQuery 变量冲突处理</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="forward"
+      src="/images/dancer.jpg">
+  <p class="site-author-name" itemprop="name">forward</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">forward</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+    <script src="/js/clickLove.js" async="async"></script>
+    <script src="/js/mouseNest.js" async="async"></script>
+</body>
+</html>

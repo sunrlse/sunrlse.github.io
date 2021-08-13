@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-dancer.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-dancer.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"subrlse.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="react-router 的路由实现既然知道了这个原理，我们来看下 react-router 的实现，我们打开 react-router 项目地址,把项目克隆下来，或则直接在 github 上预览，在 React 开发的项目里，我们通过 router.push(‘home’) 来实现页面的跳转，所以我们检索下，push 方法的实现  我们检索到了 46个 js 文件，😂，一般到这个时候，我们会放">
+<meta property="og:type" content="article">
+<meta property="og:title" content="react-router &#x2F; 2">
+<meta property="og:url" content="http://subrlse.github.io/2018/08/29/react-router_2/index.html">
+<meta property="og:site_name" content="CoF">
+<meta property="og:description" content="react-router 的路由实现既然知道了这个原理，我们来看下 react-router 的实现，我们打开 react-router 项目地址,把项目克隆下来，或则直接在 github 上预览，在 React 开发的项目里，我们通过 router.push(‘home’) 来实现页面的跳转，所以我们检索下，push 方法的实现  我们检索到了 46个 js 文件，😂，一般到这个时候，我们会放">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://subrlse.github.io/images/1.jpg">
+<meta property="article:published_time" content="2018-08-29T06:39:31.000Z">
+<meta property="article:modified_time" content="2021-07-30T07:46:19.891Z">
+<meta property="article:author" content="forward">
+<meta property="article:tag" content="react">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://subrlse.github.io/images/1.jpg">
+
+<link rel="canonical" href="http://subrlse.github.io/2018/08/29/react-router_2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>react-router / 2 | CoF</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">CoF</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Something just like this</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://subrlse.github.io/2018/08/29/react-router_2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/dancer.jpg">
+      <meta itemprop="name" content="forward">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoF">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          react-router / 2
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-08-29 14:39:31" itemprop="dateCreated datePublished" datetime="2018-08-29T14:39:31+08:00">2018-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-07-30 15:46:19" itemprop="dateModified" datetime="2021-07-30T15:46:19+08:00">2021-07-30</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="react-router-的路由实现"><a href="#react-router-的路由实现" class="headerlink" title="react-router 的路由实现"></a>react-router 的路由实现</h3><p>既然知道了这个原理，我们来看下 react-router 的实现，我们打开 <a target="_blank" rel="noopener" href="https://github.com/ReactTraining/react-router">react-router 项目地址</a>,把项目克隆下来，或则直接在 github 上预览，在 React 开发的项目里，我们通过 router.push(‘home’) 来实现页面的跳转，所以我们检索下，push 方法的实现</p>
+<p><img src="/images/1.jpg" alt="push方法检索"></p>
+<p>我们检索到了 46个 js 文件，😂，一般到这个时候，我们会放弃源码阅读，那么我们今天的文章就到这结束，谢谢大家！</p>
+<p>开个玩笑，源码阅读不能这么粗糙，react-router 4.x用法，我们只需要安装 react-router-dom。所以我们找到 package 下的 react-router-dom/modules 目录，点开 <code>index.js</code> 文件。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> BrowserRouter <span class="keyword">from</span> <span class="string">&quot;./BrowserRouter&quot;</span>;</span><br><span class="line"><span class="keyword">export</span> HashRouter <span class="keyword">from</span> <span class="string">&quot;./HashRouter&quot;</span>;</span><br><span class="line"><span class="keyword">export</span> Link <span class="keyword">from</span> <span class="string">&quot;./Link&quot;</span>;</span><br><span class="line"><span class="keyword">export</span> MemoryRouter <span class="keyword">from</span> <span class="string">&quot;./MemoryRouter&quot;</span>;</span><br><span class="line"><span class="keyword">export</span> NavLink <span class="keyword">from</span> <span class="string">&quot;./NavLink&quot;</span>;</span><br><span class="line"><span class="keyword">export</span> Prompt <span class="keyword">from</span> <span class="string">&quot;./Prompt&quot;</span>;</span><br><span class="line"><span class="keyword">export</span> Redirect <span class="keyword">from</span> <span class="string">&quot;./Redirect&quot;</span>;</span><br><span class="line"><span class="keyword">export</span> Route <span class="keyword">from</span> <span class="string">&quot;./Route&quot;</span>;</span><br><span class="line"><span class="keyword">export</span> Router <span class="keyword">from</span> <span class="string">&quot;./Router&quot;</span>;</span><br><span class="line"><span class="keyword">export</span> StaticRouter <span class="keyword">from</span> <span class="string">&quot;./StaticRouter&quot;</span>;</span><br><span class="line"><span class="keyword">export</span> Switch <span class="keyword">from</span> <span class="string">&quot;./Switch&quot;</span>;</span><br><span class="line"><span class="keyword">export</span> generatePath <span class="keyword">from</span> <span class="string">&quot;./generatePath&quot;</span>;</span><br><span class="line"><span class="keyword">export</span> matchPath <span class="keyword">from</span> <span class="string">&quot;./matchPath&quot;</span>;</span><br><span class="line"><span class="keyword">export</span> withRouter <span class="keyword">from</span> <span class="string">&quot;./withRouter&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>看到 history 对象的实例与配置的 mode 有关，react-router-dom 通过3种方式实现了路由切换。我们今天讲的内容相匹配的是 <code>createBrowserHistory</code> 的实现方案 (另外两个分别是：createHashHistory和createMemoryHistory)。 这里 react-router-dom 将 BrowserRouter、HashRouter、Link 拆分为单独组件实现，也是与 react-router 3 之间的区别之一。<br><a target="_blank" rel="noopener" href="https://github.com/ReactTraining/history#blocking-transitions">详细文档</a><br>我们来看 react-router-dom 中的 BrowserRouter 源码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> warning <span class="keyword">from</span> <span class="string">&quot;warning&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">&quot;react&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> PropTypes <span class="keyword">from</span> <span class="string">&quot;prop-types&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> &#123; createBrowserHistory <span class="keyword">as</span> createHistory &#125; <span class="keyword">from</span> <span class="string">&quot;history&quot;</span>;</span><br><span class="line"><span class="keyword">import</span> Router <span class="keyword">from</span> <span class="string">&quot;./Router&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">* The public API for a &lt;Router&gt; that uses HTML5 history.</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BrowserRouter</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> propTypes = &#123;</span><br><span class="line">    <span class="attr">basename</span>: PropTypes.string,</span><br><span class="line">    <span class="attr">forceRefresh</span>: PropTypes.bool,</span><br><span class="line">    <span class="attr">getUserConfirmation</span>: PropTypes.func,</span><br><span class="line">    <span class="attr">keyLength</span>: PropTypes.number,</span><br><span class="line">    <span class="attr">children</span>: PropTypes.node</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  history = createHistory(<span class="built_in">this</span>.props);</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="title">componentWillMount</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    warning(</span><br><span class="line">      !<span class="built_in">this</span>.props.history,</span><br><span class="line">      <span class="string">&quot;&lt;BrowserRouter&gt; ignores the history prop. To use a custom history, &quot;</span> +</span><br><span class="line">        <span class="string">&quot;use `import &#123; Router &#125;` instead of `import &#123; BrowserRouter as Router &#125;`.&quot;</span></span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="title">render</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="xml"><span class="tag">&lt;<span class="name">Router</span> <span class="attr">history</span>=<span class="string">&#123;this.history&#125;</span> <span class="attr">children</span>=<span class="string">&#123;this.props.children&#125;</span> /&gt;</span></span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> BrowserRouter;</span><br></pre></td></tr></table></figure>
+
+<p>由上可知我们在项目中使用的<BrowserRouter>组件，history方式是使用了一个叫<a target="_blank" rel="noopener" href="https://github.com/ReactTraining/history">history</a>库中的 createBrowserHistory 方法。</p>
+<h3 id="模拟单页面路由"><a href="#模拟单页面路由" class="headerlink" title="模拟单页面路由"></a>模拟单页面路由</h3><p>通过上面的学习，我们知道了，单页面应用路由的实现原理，我们也尝试去实现一个。在做管理系统的时候，我们通常会在页面的左侧放置一个固定的导航 sidebar，页面的右侧放与之匹配的内容 main 。点击导航时，我们只希望内容进行更新，如果刷新了整个页面，到时导航和通用的头部底部也进行重绘重排的话，十分浪费资源，体验也会不好。这个时候，我们就能用到我们今天学习到的内容，通过使用 HTML5 的 pushState 方法和 replaceState 方法来实现，</p>
+<p>思路：首先绑定 click 事件。当用户点击一个链接时，通过 preventDefault 函数防止默认的行为（页面跳转），同时读取链接的地址（如果有 jQuery，可以写成$(this).attr(‘href’)），把这个地址通过pushState塞入浏览器历史记录中，再利用 AJAX 技术拉取（如果有 jQuery，可以使用$.get方法）这个地址中真正的内容，同时替换当前网页的内容。</p>
+<p>为了处理用户前进、后退，我们监听 popstate 事件。当用户点击前进或后退按钮时，浏览器地址自动被转换成相应的地址，同时popstate事件发生。在事件处理函数中，我们根据当前的地址抓取相应的内容，然后利用 AJAX 拉取这个地址的真正内容，呈现，即可。</p>
+<p>最后，整个过程是不会改变页面标题的，可以通过直接对 document.title 赋值来更改页面标题。</p>
+<h3 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h3><p>好了,我们今天通过多个方面来讲了 pushState 方法和 replaceState 的应用，你应该对这个两个方法能有一个比较深刻的印象，如果想要了解更多，你可以参考以下链接</p>
+<p><a target="_blank" rel="noopener" href="https://developer.mozilla.org/zh-CN/docs/Web/API/History_API">history对象</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/react/" rel="tag"># react</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/08/29/react-router_1/" rel="prev" title="react-router / 1">
+      <i class="fa fa-chevron-left"></i> react-router / 1
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/08/29/react-router_3/" rel="next" title="react-router / 3">
+      react-router / 3 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#react-router-%E7%9A%84%E8%B7%AF%E7%94%B1%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.</span> <span class="nav-text">react-router 的路由实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E5%8D%95%E9%A1%B5%E9%9D%A2%E8%B7%AF%E7%94%B1"><span class="nav-number">2.</span> <span class="nav-text">模拟单页面路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A9%E5%B1%95"><span class="nav-number">3.</span> <span class="nav-text">扩展</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="forward"
+      src="/images/dancer.jpg">
+  <p class="site-author-name" itemprop="name">forward</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">forward</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+    <script src="/js/clickLove.js" async="async"></script>
+    <script src="/js/mouseNest.js" async="async"></script>
+</body>
+</html>

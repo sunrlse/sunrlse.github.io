@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-dancer.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-dancer.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"subrlse.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="history methods createBrowserHistory通过之前我们已经知道了react-router-dom的 history模式使用的是history库中的createBrowserHistory方法。下面我们来一起看看其中的奥秘。 1234567891011121314151617181920212223242526272829303132333435363738394041">
+<meta property="og:type" content="article">
+<meta property="og:title" content="react-router &#x2F; 3">
+<meta property="og:url" content="http://subrlse.github.io/2018/08/29/react-router_3/index.html">
+<meta property="og:site_name" content="CoF">
+<meta property="og:description" content="history methods createBrowserHistory通过之前我们已经知道了react-router-dom的 history模式使用的是history库中的createBrowserHistory方法。下面我们来一起看看其中的奥秘。 1234567891011121314151617181920212223242526272829303132333435363738394041">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-08-29T07:30:12.000Z">
+<meta property="article:modified_time" content="2021-07-30T07:46:19.891Z">
+<meta property="article:author" content="forward">
+<meta property="article:tag" content="react">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://subrlse.github.io/2018/08/29/react-router_3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>react-router / 3 | CoF</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">CoF</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">Something just like this</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://subrlse.github.io/2018/08/29/react-router_3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/dancer.jpg">
+      <meta itemprop="name" content="forward">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CoF">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          react-router / 3
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-08-29 15:30:12" itemprop="dateCreated datePublished" datetime="2018-08-29T15:30:12+08:00">2018-08-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-07-30 15:46:19" itemprop="dateModified" datetime="2021-07-30T15:46:19+08:00">2021-07-30</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="history-methods-createBrowserHistory"><a href="#history-methods-createBrowserHistory" class="headerlink" title="history methods createBrowserHistory"></a>history methods createBrowserHistory</h3><p>通过之前我们已经知道了react-router-dom的<BrowserRouter> history模式使用的是history库中的createBrowserHistory方法。下面我们来一起看看其中的奥秘。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> createBrowserHistory = <span class="function"><span class="keyword">function</span> <span class="title">createBrowserHistory</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">//  arguments[0], 由上一节可知它是一个非必传的object</span></span><br><span class="line">  <span class="keyword">var</span> props = <span class="built_in">arguments</span>.length &gt; <span class="number">0</span> &amp;&amp; <span class="built_in">arguments</span>[<span class="number">0</span>] !== <span class="literal">undefined</span> ? <span class="built_in">arguments</span>[<span class="number">0</span>] : &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  (<span class="number">0</span>, _invariant2.default)(_DOMUtils.canUseDOM, <span class="string">&#x27;Browser history needs a DOM&#x27;</span>);</span><br><span class="line">  <span class="comment">//  之前将history赋值给变量globalHistory</span></span><br><span class="line">  <span class="keyword">var</span> globalHistory = <span class="built_in">window</span>.history;</span><br><span class="line">  <span class="comment">//  _DOMUtils.js 中处理一些浏览器兼容性 和 浏览器内核、机型判断的方法</span></span><br><span class="line">  <span class="comment">//  判断是否非主流机型以及浏览器</span></span><br><span class="line">  <span class="keyword">var</span> canUseHistory = (<span class="number">0</span>, _DOMUtils.supportsHistory)();</span><br><span class="line">  <span class="comment">//  是否为IE浏览器</span></span><br><span class="line">  <span class="keyword">var</span> needsHashChangeListener = !(<span class="number">0</span>, _DOMUtils.supportsPopStateOnHashChange)();</span><br><span class="line">  <span class="comment">//  forceRefresh为true，代表将在页面导航时使用完整页面刷新。其他参数请自行参考官网文档</span></span><br><span class="line">  <span class="keyword">var</span> _props$forceRefresh = props.forceRefresh,</span><br><span class="line">      forceRefresh = _props$forceRefresh === <span class="literal">undefined</span> ? <span class="literal">false</span> : _props$forceRefresh,</span><br><span class="line">      _props$getUserConfirm = props.getUserConfirmation,</span><br><span class="line">      getUserConfirmation = _props$getUserConfirm === <span class="literal">undefined</span> ? _DOMUtils.getConfirmation : _props$getUserConfirm,</span><br><span class="line">      _props$keyLength = props.keyLength,</span><br><span class="line">      keyLength = _props$keyLength === <span class="literal">undefined</span> ? <span class="number">6</span> : _props$keyLength;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> basename = props.basename ? (<span class="number">0</span>, _PathUtils.stripTrailingSlash)((<span class="number">0</span>, _PathUtils.addLeadingSlash)(props.basename)) : <span class="string">&#x27;&#x27;</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> getDOMLocation = <span class="function"><span class="keyword">function</span> <span class="title">getDOMLocation</span>(<span class="params">historyState</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> _ref = historyState || &#123;&#125;,</span><br><span class="line">        key = _ref.key,</span><br><span class="line">        state = _ref.state;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> _window$location = <span class="built_in">window</span>.location,</span><br><span class="line">        pathname = _window$location.pathname,</span><br><span class="line">        search = _window$location.search,</span><br><span class="line">        hash = _window$location.hash;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> path = pathname + search + hash;</span><br><span class="line"></span><br><span class="line">    (<span class="number">0</span>, _warning2.default)(!basename || (<span class="number">0</span>, _PathUtils.hasBasename)(path, basename), <span class="string">&#x27;You are attempting to use a basename on a page whose URL path does not begin &#x27;</span> + <span class="string">&#x27;with the basename. Expected path &quot;&#x27;</span> + path + <span class="string">&#x27;&quot; to begin with &quot;&#x27;</span> + basename + <span class="string">&#x27;&quot;.&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (basename) path = (<span class="number">0</span>, _PathUtils.stripBasename)(path, basename);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (<span class="number">0</span>, _LocationUtils.createLocation)(path, state, key);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> createKey = <span class="function"><span class="keyword">function</span> <span class="title">createKey</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Math</span>.random().toString(<span class="number">36</span>).substr(<span class="number">2</span>, keyLength);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> transitionManager = (<span class="number">0</span>, _createTransitionManager2.default)();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> setState = <span class="function"><span class="keyword">function</span> <span class="title">setState</span>(<span class="params">nextState</span>) </span>&#123;</span><br><span class="line">    _extends(history, nextState);</span><br><span class="line"></span><br><span class="line">    history.length = globalHistory.length;</span><br><span class="line"></span><br><span class="line">    transitionManager.notifyListeners(history.location, history.action);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> handlePopState = <span class="function"><span class="keyword">function</span> <span class="title">handlePopState</span>(<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ((<span class="number">0</span>, _DOMUtils.isExtraneousPopstateEvent)(event)) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    handlePop(getDOMLocation(event.state));</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> handleHashChange = <span class="function"><span class="keyword">function</span> <span class="title">handleHashChange</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    handlePop(getDOMLocation(getHistoryState()));</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> forceNextPop = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> handlePop = <span class="function"><span class="keyword">function</span> <span class="title">handlePop</span>(<span class="params">location</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (forceNextPop) &#123;</span><br><span class="line">      forceNextPop = <span class="literal">false</span>;</span><br><span class="line">      setState();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">var</span> action = <span class="string">&#x27;POP&#x27;</span>;</span><br><span class="line"></span><br><span class="line">      transitionManager.confirmTransitionTo(location, action, getUserConfirmation, <span class="function"><span class="keyword">function</span> (<span class="params">ok</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (ok) &#123;</span><br><span class="line">          setState(&#123; <span class="attr">action</span>: action, <span class="attr">location</span>: location &#125;);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          revertPop(location);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> revertPop = <span class="function"><span class="keyword">function</span> <span class="title">revertPop</span>(<span class="params">fromLocation</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> toLocation = history.location;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span> We could probably make this more reliable by</span></span><br><span class="line">    <span class="comment">// keeping a list of keys we&#x27;ve seen in sessionStorage.</span></span><br><span class="line">    <span class="comment">// Instead, we just default to 0 for keys we don&#x27;t know.</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> toIndex = allKeys.indexOf(toLocation.key);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (toIndex === -<span class="number">1</span>) toIndex = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> fromIndex = allKeys.indexOf(fromLocation.key);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (fromIndex === -<span class="number">1</span>) fromIndex = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> delta = toIndex - fromIndex;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (delta) &#123;</span><br><span class="line">      forceNextPop = <span class="literal">true</span>;</span><br><span class="line">      go(delta);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> initialLocation = getDOMLocation(getHistoryState());</span><br><span class="line">  <span class="keyword">var</span> allKeys = [initialLocation.key];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> createHref = <span class="function"><span class="keyword">function</span> <span class="title">createHref</span>(<span class="params">location</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> basename + (<span class="number">0</span>, _PathUtils.createPath)(location);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> push = <span class="function"><span class="keyword">function</span> <span class="title">push</span>(<span class="params">path, state</span>) </span>&#123;</span><br><span class="line">    (<span class="number">0</span>, _warning2.default)(!((<span class="keyword">typeof</span> path === <span class="string">&#x27;undefined&#x27;</span> ? <span class="string">&#x27;undefined&#x27;</span> : _typeof(path)) === <span class="string">&#x27;object&#x27;</span> &amp;&amp; path.state !== <span class="literal">undefined</span> &amp;&amp; state !== <span class="literal">undefined</span>), <span class="string">&#x27;You should avoid providing a 2nd state argument to push when the 1st &#x27;</span> + <span class="string">&#x27;argument is a location-like object that already has state; it is ignored&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> action = <span class="string">&#x27;PUSH&#x27;</span>;</span><br><span class="line">    <span class="comment">//  重写location对象</span></span><br><span class="line">    <span class="keyword">var</span> location = (<span class="number">0</span>, _LocationUtils.createLocation)(path, state, createKey(), history.location);</span><br><span class="line"></span><br><span class="line">    transitionManager.confirmTransitionTo(location, action, getUserConfirmation, <span class="function"><span class="keyword">function</span> (<span class="params">ok</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (!ok) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">var</span> href = createHref(location);</span><br><span class="line">      <span class="keyword">var</span> key = location.key,</span><br><span class="line">          state = location.state;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (canUseHistory) &#123;</span><br><span class="line">        globalHistory.pushState(&#123; <span class="attr">key</span>: key, <span class="attr">state</span>: state &#125;, <span class="literal">null</span>, href);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (forceRefresh) &#123;</span><br><span class="line">          <span class="built_in">window</span>.location.href = href;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="keyword">var</span> prevIndex = allKeys.indexOf(history.location.key);</span><br><span class="line">          <span class="keyword">var</span> nextKeys = allKeys.slice(<span class="number">0</span>, prevIndex === -<span class="number">1</span> ? <span class="number">0</span> : prevIndex + <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">          nextKeys.push(location.key);</span><br><span class="line">          allKeys = nextKeys;</span><br><span class="line"></span><br><span class="line">          setState(&#123; <span class="attr">action</span>: action, <span class="attr">location</span>: location &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        (<span class="number">0</span>, _warning2.default)(state === <span class="literal">undefined</span>, <span class="string">&#x27;Browser history cannot push state in browsers that do not support HTML5 history&#x27;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">window</span>.location.href = href;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> replace = <span class="function"><span class="keyword">function</span> <span class="title">replace</span>(<span class="params">path, state</span>) </span>&#123;</span><br><span class="line">    (<span class="number">0</span>, _warning2.default)(!((<span class="keyword">typeof</span> path === <span class="string">&#x27;undefined&#x27;</span> ? <span class="string">&#x27;undefined&#x27;</span> : _typeof(path)) === <span class="string">&#x27;object&#x27;</span> &amp;&amp; path.state !== <span class="literal">undefined</span> &amp;&amp; state !== <span class="literal">undefined</span>), <span class="string">&#x27;You should avoid providing a 2nd state argument to replace when the 1st &#x27;</span> + <span class="string">&#x27;argument is a location-like object that already has state; it is ignored&#x27;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> action = <span class="string">&#x27;REPLACE&#x27;</span>;</span><br><span class="line">    <span class="keyword">var</span> location = (<span class="number">0</span>, _LocationUtils.createLocation)(path, state, createKey(), history.location);</span><br><span class="line"></span><br><span class="line">    transitionManager.confirmTransitionTo(location, action, getUserConfirmation, <span class="function"><span class="keyword">function</span> (<span class="params">ok</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (!ok) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">var</span> href = createHref(location);</span><br><span class="line">      <span class="keyword">var</span> key = location.key,</span><br><span class="line">          state = location.state;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (canUseHistory) &#123;</span><br><span class="line">        globalHistory.replaceState(&#123; <span class="attr">key</span>: key, <span class="attr">state</span>: state &#125;, <span class="literal">null</span>, href);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (forceRefresh) &#123;</span><br><span class="line">          <span class="built_in">window</span>.location.replace(href);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="keyword">var</span> prevIndex = allKeys.indexOf(history.location.key);</span><br><span class="line"></span><br><span class="line">          <span class="keyword">if</span> (prevIndex !== -<span class="number">1</span>) allKeys[prevIndex] = location.key;</span><br><span class="line"></span><br><span class="line">          setState(&#123; <span class="attr">action</span>: action, <span class="attr">location</span>: location &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        (<span class="number">0</span>, _warning2.default)(state === <span class="literal">undefined</span>, <span class="string">&#x27;Browser history cannot replace state in browsers that do not support HTML5 history&#x27;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="built_in">window</span>.location.replace(href);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> go = <span class="function"><span class="keyword">function</span> <span class="title">go</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">    globalHistory.go(n);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> goBack = <span class="function"><span class="keyword">function</span> <span class="title">goBack</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> go(-<span class="number">1</span>);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> goForward = <span class="function"><span class="keyword">function</span> <span class="title">goForward</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> go(<span class="number">1</span>);</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> listenerCount = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> checkDOMListeners = <span class="function"><span class="keyword">function</span> <span class="title">checkDOMListeners</span>(<span class="params">delta</span>) </span>&#123;</span><br><span class="line">    listenerCount += delta;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (listenerCount === <span class="number">1</span>) &#123;</span><br><span class="line">      (<span class="number">0</span>, _DOMUtils.addEventListener)(<span class="built_in">window</span>, PopStateEvent, handlePopState);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (needsHashChangeListener) (<span class="number">0</span>, _DOMUtils.addEventListener)(<span class="built_in">window</span>, HashChangeEvent, handleHashChange);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (listenerCount === <span class="number">0</span>) &#123;</span><br><span class="line">      (<span class="number">0</span>, _DOMUtils.removeEventListener)(<span class="built_in">window</span>, PopStateEvent, handlePopState);</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (needsHashChangeListener) (<span class="number">0</span>, _DOMUtils.removeEventListener)(<span class="built_in">window</span>, HashChangeEvent, handleHashChange);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> isBlocked = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> block = <span class="function"><span class="keyword">function</span> <span class="title">block</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> prompt = <span class="built_in">arguments</span>.length &gt; <span class="number">0</span> &amp;&amp; <span class="built_in">arguments</span>[<span class="number">0</span>] !== <span class="literal">undefined</span> ? <span class="built_in">arguments</span>[<span class="number">0</span>] : <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> unblock = transitionManager.setPrompt(prompt);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!isBlocked) &#123;</span><br><span class="line">      checkDOMListeners(<span class="number">1</span>);</span><br><span class="line">      isBlocked = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (isBlocked) &#123;</span><br><span class="line">        isBlocked = <span class="literal">false</span>;</span><br><span class="line">        checkDOMListeners(-<span class="number">1</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> unblock();</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> listen = <span class="function"><span class="keyword">function</span> <span class="title">listen</span>(<span class="params">listener</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> unlisten = transitionManager.appendListener(listener);</span><br><span class="line">    checkDOMListeners(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">      checkDOMListeners(-<span class="number">1</span>);</span><br><span class="line">      unlisten();</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">var</span> history = &#123;</span><br><span class="line">    <span class="attr">length</span>: globalHistory.length,</span><br><span class="line">    <span class="attr">action</span>: <span class="string">&#x27;POP&#x27;</span>,</span><br><span class="line">    <span class="attr">location</span>: initialLocation,</span><br><span class="line">    <span class="attr">createHref</span>: createHref,</span><br><span class="line">    <span class="attr">push</span>: push,</span><br><span class="line">    <span class="attr">replace</span>: replace,</span><br><span class="line">    <span class="attr">go</span>: go,</span><br><span class="line">    <span class="attr">goBack</span>: goBack,</span><br><span class="line">    <span class="attr">goForward</span>: goForward,</span><br><span class="line">    <span class="attr">block</span>: block,</span><br><span class="line">    <span class="attr">listen</span>: listen</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> history;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/react/" rel="tag"># react</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/08/29/react-router_2/" rel="prev" title="react-router / 2">
+      <i class="fa fa-chevron-left"></i> react-router / 2
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2018/09/05/throttle/" rel="next" title="节流">
+      节流 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#history-methods-createBrowserHistory"><span class="nav-number">1.</span> <span class="nav-text">history methods createBrowserHistory</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="forward"
+      src="/images/dancer.jpg">
+  <p class="site-author-name" itemprop="name">forward</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">forward</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+    <script src="/js/clickLove.js" async="async"></script>
+    <script src="/js/mouseNest.js" async="async"></script>
+</body>
+</html>
